@@ -1,0 +1,52 @@
+{
+  "mode": "complex",
+  "status": "decision-ready",
+  "prompt": "Choose a portable distribution plan for five reviewed skills.",
+  "facts": [
+    {
+      "claim": "Claude Code discovers project skills under .claude/skills/.",
+      "source": "https://code.claude.com/docs/en/skills",
+      "observed": "2026-08-24"
+    },
+    {
+      "claim": "Cursor discovers project skills under .cursor/skills/ and .agents/skills/.",
+      "source": "https://cursor.com/docs/skills",
+      "observed": "2026-08-24"
+    }
+  ],
+  "rounds": [
+    {
+      "questions": [
+        {
+          "title": "Ownership",
+          "choices": ["One canonical skills source", "Separate harness payloads"],
+          "recommendation": "One canonical skills source",
+          "consequence": "One source keeps updates and rollback comparable; separate payloads can drift."
+        }
+      ]
+    },
+    {
+      "questions": [
+        {
+          "title": "Codex distribution",
+          "choices": ["Thin plugin wrapper", "Copied plugin payload"],
+          "recommendation": "Thin plugin wrapper",
+          "consequence": "The wrapper exposes skills/ without becoming another source; a copied payload can diverge."
+        },
+        {
+          "title": "Other harness proof",
+          "choices": ["Verify project discovery", "Invent adapters"],
+          "recommendation": "Verify project discovery",
+          "consequence": "Verified paths are supportable; invented adapters would overclaim compatibility."
+        }
+      ]
+    }
+  ],
+  "spec": {
+    "outcome": "Distribute clarify, manage-skills, and route-models from one source.",
+    "non_goals": ["Owner context", "Lifecycle skills", "Central run history"],
+    "acceptance": "Manifest, discovery, version, update, rollback, and hashes are proven in isolated fixtures.",
+    "implementation_started": false
+  },
+  "actions": ["inventory", "research", "ask", "record-spec"]
+}

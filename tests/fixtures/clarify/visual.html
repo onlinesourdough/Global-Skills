@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Choose one owner for a reusable skill</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; background: #f5f1e8; color: #20231f; }
+    body { margin: 0; padding: 2rem; line-height: 1.5; }
+    main { max-width: 56rem; margin: auto; }
+    .card { background: white; border-radius: 1rem; padding: 1.25rem; box-shadow: 0 0.3rem 1rem #0002; }
+    svg { display: block; width: 100%; height: auto; min-height: 14rem; }
+    :focus-visible { outline: 0.25rem solid #8a4b15; outline-offset: 0.2rem; }
+    @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Choose one owner</h1>
+    <p class="card"><strong>Audience:</strong> project owners deciding where a reusable skill belongs.</p>
+    <p class="card">Share a skill only when the same behavior and proof recur.</p>
+    <figure class="card">
+      <svg viewBox="0 0 900 300" role="img" aria-labelledby="visual-title visual-desc">
+        <title id="visual-title">One decision with two ownership paths</title>
+        <desc id="visual-desc">A request flows to a local project or to the global shelf when several projects need the same method.</desc>
+        <rect x="20" y="110" width="180" height="80" rx="18" fill="#d6e7dc" stroke="#244536" stroke-width="4"/>
+        <text x="110" y="157" text-anchor="middle" font-size="24" fill="#182c22">request</text>
+        <path d="M205 150H355M355 150L330 130M355 150L330 170" fill="none" stroke="#244536" stroke-width="6"/>
+        <rect x="360" y="40" width="220" height="80" rx="18" fill="#f1d29c" stroke="#633d16" stroke-width="4"/>
+        <text x="470" y="88" text-anchor="middle" font-size="24" fill="#3d2916">one owner</text>
+        <text x="470" y="112" text-anchor="middle" font-size="17" fill="#3d2916">keep it local</text>
+        <rect x="360" y="180" width="220" height="80" rx="18" fill="#b8cfe4" stroke="#1e3b58" stroke-width="4"/>
+        <text x="470" y="228" text-anchor="middle" font-size="24" fill="#17314a">many owners</text>
+        <text x="470" y="252" text-anchor="middle" font-size="17" fill="#17314a">global shelf</text>
+        <path d="M585 80H820M585 220H820" fill="none" stroke="#244536" stroke-width="6"/>
+      </svg>
+      <figcaption>Reuse decides ownership; it does not start implementation.</figcaption>
+    </figure>
+    <section id="text-fallback" class="card" aria-labelledby="fallback-heading">
+      <h2 id="fallback-heading">Text fallback</h2>
+      <p>One owner means a local project skill. Several owners with the same
+        behavior and proof justify a reviewed global skill.</p>
+    </section>
+    <section class="card" aria-labelledby="sources-heading">
+      <h2 id="sources-heading">Sources and fact checks</h2>
+      <ul>
+        <li><a href="https://github.com/onlinesourdough/Skills/issues/1">Skills ownership issue</a>, checked 2026-08-24.</li>
+        <li>Claim: visual output is optional; checked against the clarification disposition, 2026-08-24.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

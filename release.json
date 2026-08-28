@@ -1,0 +1,116 @@
+{
+  "schema_version": 3,
+  "name": "onlinesourdough-skills",
+  "version": "0.2.0",
+  "status": "candidate",
+  "release_date": null,
+  "released": false,
+  "source_of_truth": "skills/<slug>/SKILL.md",
+  "license": "MIT",
+  "included_skills": [
+    "clarify",
+    "manage-skills",
+    "orchestrate-workers",
+    "route-models",
+    "shape-offer"
+  ],
+  "source_boundary": {
+    "reviewed_candidate": "r2 lead-reviewed five-skill tree",
+    "history_strategy": "single publish-safe clean-root commit with no parent",
+    "candidate_state": "committed private pre-publication candidate"
+  },
+  "atlas": {
+    "canonical_repository": "https://github.com/onlinesourdough/Skills",
+    "endpoint_continuity": "The existing onlinesourdough/Skills repository remains canonical; publication does not rename, archive, replace, or duplicate it.",
+    "candidate_boundary": "The repository remains private and Build does not claim that the live Atlas integration works; both public access and Atlas behavior require post-Ship verification.",
+    "public_static_mode": {
+      "source": "bounded anonymous GitHub API reads",
+      "default_repository": "onlinesourdough/Skills",
+      "display": "observed revision and access state",
+      "write_policy": "read-only"
+    },
+    "authenticated_self_hosted_mode": {
+      "proposal_limit": "exactly one validated skill edit",
+      "delivery": "new branch and pull request",
+      "default_branch_write": false
+    }
+  },
+  "history_visibility": {
+    "status": "PRIVATE_SUPPORT_PURGE_PENDING",
+    "visibility_change_legal": false,
+    "ordinary_refs": "refs/heads/main and refs/heads/codex/issue-33-cross-harness-portability converge on the verified clean-root candidate",
+    "historical_release": "v0.1.0 release and tag are withheld/deleted and must not be recreated",
+    "github_managed_residue": "refs/pull/2/head and refs/pull/3/head plus unreachable old objects and cached diffs/views remain blocked pending GitHub Support purge confirmation",
+    "canonical_endpoint_action": "Keep the existing onlinesourdough/Skills repository private and in place; do not rename, archive, replace, duplicate, or move it.",
+    "support_gate": "No visibility change, v0.2.0 tag, or GitHub release is legal until GitHub Support confirms purge and the private-state re-audit passes.",
+    "decision_record": "docs/source-audit.md#authorized-in-place-sanitization-and-publication-gate"
+  },
+  "marketplace": {
+    "path": ".agents/plugins/marketplace.json",
+    "source": {
+      "source": "url",
+      "url": "https://github.com/onlinesourdough/Skills",
+      "ref": "v0.2.0"
+    },
+    "policy": {
+      "installation": "AVAILABLE",
+      "authentication": "ON_INSTALL"
+    },
+    "category": "Productivity",
+    "source_ref_kind": "planned-immutable-tag",
+    "release_tag": "v0.2.0",
+    "tag_exists_at_build": false,
+    "ship_requirement": "After GitHub Support confirms purge and private re-audit passes, create v0.2.0 from the reviewed candidate at the existing canonical endpoint and verify it before presenting installation as available.",
+    "install_scope": "explicit project or isolated fixture unless the user intentionally selects a wider scope",
+    "recovery": "remove this plugin or its exact project-local skills; no public rollback tag exists before v0.2.0 and v0.1.0 must not be recreated"
+  },
+  "distribution": {
+    "codex": {
+      "marketplace_add": "codex plugin marketplace add onlinesourdough/Skills --ref v0.2.0",
+      "list": "codex plugin list --available --json",
+      "install": "codex plugin add onlinesourdough-skills@onlinesourdough-skills",
+      "candidate_proof": "isolated local Git commit/ref fixture only; no v0.2.0 tag or public installation is claimed during Build"
+    },
+    "skills_cli": {
+      "package": "skills@1.5.23",
+      "repository": "https://github.com/vercel-labs/skills",
+      "source_commit": "435076e78988e1e6ec40d00b0b1d76bdbbc5419a",
+      "license": "MIT",
+      "npm_integrity": "sha512-+hMNBSi35yfX0sKD+ZcRm9y5or7u313OdkcvrRvJAsAzGCaA8wRTu2OmVdN0KRbk9ybqKby5dijkn6OVvNTUmw==",
+      "discover": "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --list",
+      "install": "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --skill clarify manage-skills orchestrate-workers route-models shape-offer --agent claude-code cursor -y",
+      "list": "npx skills@1.5.23 list --agent claude-code cursor",
+      "candidate_proof": "disposable project and local clean-commit fixture with telemetry disabled; no global or consumer-repository write"
+    },
+    "model_execution_boundary": "Candidate install/discovery, lock/ref, and byte-hash evidence does not claim model-backed behavior for logged-out or otherwise untested Claude Code and Cursor Agent runtimes."
+  },
+  "historical_release": {
+    "version": "0.1.0",
+    "public_continuity": "WITHHELD",
+    "tag_exists_after_private_sanitization": false,
+    "release_exists_after_private_sanitization": false,
+    "recreate": false,
+    "first_public_release": "v0.2.0"
+  },
+  "release_notes": "CHANGELOG.md#020-release-candidate",
+  "build_evidence": {
+    "required_checks": [
+      "python3 scripts/validate_repo.py",
+      "python3 scripts/secret_scan.py",
+      "python3 tests/run_all.py"
+    ],
+    "public_safety_audit": "docs/source-audit.md",
+    "candidate_only": true
+  },
+  "ship_gate": [
+    "lead Review accepted the complete r2 candidate and the owner authorized the exact r3 in-place sanitization",
+    "both authorized ordinary branch refs resolve to the independently verified clean-root candidate",
+    "the v0.1.0 GitHub release and local/remote tag are absent and must not be recreated",
+    "Skills issue metadata #1, #4, #5, #6, #7, and #8 contains no blocked private references or inventory",
+    "GitHub Support confirms purge of refs/pull/2/head, refs/pull/3/head, unreachable old objects, cached diffs, and cached views",
+    "a private-state re-audit reports zero blocked findings across every ordinary and managed ref, object, issue, release, cached diff, and cached view",
+    "the existing onlinesourdough/Skills repository remains private and the only canonical endpoint until every preceding gate passes",
+    "a later exact Ship authority changes candidate metadata to released state with the actual date and creates immutable v0.2.0 from the reviewed commit",
+    "anonymous API, HTTP, Git, Atlas, Codex, and Skills CLI readback passes before any public availability claim"
+  ]
+}

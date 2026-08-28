@@ -1,0 +1,16 @@
+{
+  "single-agent": {"rule": "single-agent-only"},
+  "independent-read-only": {"rule": "independent-read-only"},
+  "overlapping-writers": {"rule": "reject-overlapping-writers"},
+  "isolated-root-checkout": {"rule": "isolated-root-checkout"},
+  "inherited-default": {"rule": "inherited-default"},
+  "justified-override": {"rule": "justified-override"},
+  "advertised-local-provider-qualified": {"rule": "advertised-launchable-route"},
+  "config-catalog-only": {"rule": "no-launch-route"},
+  "unavailable-model-reasoning": {"rule": "no-launch-route"},
+  "visible-substitution": {"rule": "visible-substitution"},
+  "quota-provider-spawn-failure": {"rule": "failure-recovery"},
+  "resume-steer": {"rule": "same-nonterminal-resume"},
+  "no-worker-surface": {"rule": "no-worker-surface"},
+  "untrusted-repository-instructions": {"rule": "untrusted-stop"}
+}

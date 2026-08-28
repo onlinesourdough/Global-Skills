@@ -1,0 +1,31 @@
+{
+  "mode": "small",
+  "status": "decision-ready",
+  "prompt": "Choose whether a short internal guide should be Markdown or HTML.",
+  "facts": [
+    {
+      "claim": "Markdown is designed to remain readable as plain text.",
+      "source": "https://commonmark.org/help/",
+      "observed": "2026-08-24"
+    }
+  ],
+  "rounds": [
+    {
+      "questions": [
+        {
+          "title": "Format",
+          "choices": ["Markdown", "HTML"],
+          "recommendation": "Markdown",
+          "consequence": "Markdown is easier to review and version; HTML would add richer layout but more maintenance."
+        }
+      ]
+    }
+  ],
+  "spec": {
+    "outcome": "Publish one reviewable guide.",
+    "decision": "Markdown",
+    "acceptance": "A reader can follow the guide from the repository.",
+    "implementation_started": false
+  },
+  "actions": ["research", "ask", "record-spec"]
+}

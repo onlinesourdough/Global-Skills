@@ -1,0 +1,14 @@
+{
+  "source": "fixture://models.dev/empty-allowlist",
+  "observed": "2026-08-24T08:00:00Z",
+  "expires": "2026-09-23T08:00:00Z",
+  "available_models": [],
+  "fixture/fast": {
+    "id": "fixture/fast",
+    "name": "Fixture Fast",
+    "limit": {"context": 64000},
+    "modalities": {"input": ["text"], "output": ["text"]},
+    "cost": {"input": 1.0, "output": 1.0},
+    "last_updated": "2026-08-20"
+  }
+}

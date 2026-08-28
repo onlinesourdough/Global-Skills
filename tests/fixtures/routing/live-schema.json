@@ -1,0 +1,17 @@
+{
+  "source": "fixture://models.dev/live-schema",
+  "observed": "2026-08-24T08:00:00Z",
+  "expires": "2026-09-23T08:00:00Z",
+  "fixture/live": {
+    "id": "fixture/live",
+    "name": "Live Schema Fixture",
+    "limit": {"context": 64000},
+    "modalities": {"input": ["text"], "output": ["text"]},
+    "tool_call": true,
+    "reasoning": false,
+    "cost": {"input": 1.0, "output": 1.0},
+    "last_updated": "2026-08-24"
+  },
+  "available_models": ["fixture/live"],
+  "requested_role": "default"
+}
