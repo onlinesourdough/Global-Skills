@@ -46,14 +46,15 @@ The audit methods are:
   owner-project inventory. The known-secret scan found no credentials. Exact
   old refs, object IDs, metadata, and values are retained only in the private
   recovery set.
-- The r3 future-public history is intentionally one reviewed clean-root commit
-  with no parent. Both ordinary branch refs converge on that commit. Issue #9
-  builds the current four-skill candidate from that base while excluding
+- The r3 future-public history starts at one reviewed parentless clean-root
+  baseline. The retained candidate branch stays at that baseline; `main`
+  advances from it only through ordinary reviewed single-parent commits. Issue
+  #9 builds the current four-skill candidate on that line while excluding
   obsolete private history and generated residue.
-- The clean-root tree and every blob reachable from the two future-public
-  ordinary refs contain zero blocked private repository identifiers, zero
-  blocked inventory occurrences, zero direct private issue URLs, and zero
-  known-secret signature matches.
+- The clean-root baseline tree and every blob reachable from the two
+  future-public ordinary refs contain zero blocked private repository
+  identifiers, zero blocked inventory occurrences, zero direct private issue
+  URLs, and zero known-secret signature matches.
 - Historical `v0.1.0` has no public continuity. Its private GitHub release and
   local/remote tag are deleted and must not be recreated. `v0.2.0` is not
   created in r3.

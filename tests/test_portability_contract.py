@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import importlib.util
 import json
 import subprocess
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -10,6 +12,11 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILLS = {"clarify", "manage-skills", "orchestrate-workers", "shape-offer"}
 INSTALL = "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --skill clarify manage-skills orchestrate-workers shape-offer --agent claude-code cursor -y"
 RETIRED_SKILL = "route-models"
+VALIDATOR_PATH = ROOT / "scripts" / "validate_repo.py"
+VALIDATOR_SPEC = importlib.util.spec_from_file_location("validate_repo_lineage", VALIDATOR_PATH)
+assert VALIDATOR_SPEC and VALIDATOR_SPEC.loader
+VALIDATOR = importlib.util.module_from_spec(VALIDATOR_SPEC)
+VALIDATOR_SPEC.loader.exec_module(VALIDATOR)
 
 
 class PortabilityContractTests(unittest.TestCase):
@@ -118,14 +125,15 @@ class PortabilityContractTests(unittest.TestCase):
         history = self.release["history_visibility"]
         self.assertEqual(history["status"], "PRIVATE_SUPPORT_PURGE_PENDING")
         self.assertFalse(history["visibility_change_legal"])
-        self.assertIn("converge on the verified clean-root candidate", history["ordinary_refs"])
+        self.assertIn("retains the verified clean-root baseline", history["ordinary_refs"])
+        self.assertIn("main descends linearly", history["ordinary_refs"])
         self.assertIn("withheld/deleted", history["historical_release"])
         self.assertIn("GitHub Support purge confirmation", history["github_managed_residue"])
         self.assertIn("Keep the existing onlinesourdough/Skills repository private and in place", history["canonical_endpoint_action"])
         gate = "\n".join(self.release["ship_gate"])
         for marker in [
             "owner authorized the exact r3 in-place sanitization",
-            "both authorized ordinary branch refs",
+            "retained candidate branch resolves to the independently verified clean-root baseline and main descends linearly from it",
             "v0.1.0 GitHub release and local/remote tag are absent",
             "Skills issue metadata #1, #4, #5, #6, #7, and #8",
             "GitHub Support confirms purge of refs/pull/2/head, refs/pull/3/head",
@@ -135,26 +143,33 @@ class PortabilityContractTests(unittest.TestCase):
         self.assertIn("selected no historical `v0.1.0` continuity", normalized_readme)
         self.assertIn("No public install or rollback command may point to `v0.1.0`", normalized_readme)
 
-    def test_authorized_branches_converge_on_one_clean_root(self) -> None:
+    def test_authorized_branches_follow_one_clean_root_lineage(self) -> None:
         head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True, capture_output=True, check=True).stdout.strip()
         main = subprocess.run(["git", "rev-parse", "refs/heads/main"], cwd=ROOT, text=True, capture_output=True, check=True).stdout.strip()
-        feature = subprocess.run(
+        baseline = subprocess.run(
             ["git", "rev-parse", "refs/heads/codex/issue-33-cross-harness-portability"],
             cwd=ROOT,
             text=True,
             capture_output=True,
             check=True,
         ).stdout.strip()
-        parents = subprocess.run(
-            ["git", "rev-list", "--parents", "-n", "1", "HEAD"],
+        roots = subprocess.run(
+            ["git", "rev-list", "--max-parents=0", "HEAD"],
             cwd=ROOT,
             text=True,
             capture_output=True,
             check=True,
-        ).stdout.split()
+        ).stdout.splitlines()
+        lineage = subprocess.run(
+            ["git", "rev-list", "--parents", f"{baseline}..{main}"],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=True,
+        ).stdout.splitlines()
         self.assertEqual(main, head)
-        self.assertEqual(feature, head)
-        self.assertEqual(len(parents), 1)
+        self.assertEqual(roots, [baseline])
+        self.assertTrue(all(len(record.split()) == 2 for record in lineage))
 
     def test_repository_contains_one_canonical_payload_root(self) -> None:
         payloads = [path for path in ROOT.rglob("SKILL.md") if ".git" not in path.parts]
@@ -189,6 +204,84 @@ class PortabilityContractTests(unittest.TestCase):
         for name in ("LICENSE", "CONTRIBUTING.md", "SECURITY.md", "SUPPORT.md", "CHANGELOG.md"):
             self.assertTrue((ROOT / name).is_file(), name)
             self.assertIn(name, self.readme)
+
+
+class GitLineageFixtureTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory(prefix="skills-lineage-")
+        self.repo = Path(self.temporary.name)
+        self.git("init", "-q", "-b", "main")
+        self.git("config", "user.name", "fixture")
+        self.git("config", "user.email", "fixture@example.invalid")
+        (self.repo / "baseline.txt").write_text("baseline\n", encoding="utf-8")
+        self.git("add", "baseline.txt")
+        self.git("commit", "-qm", "clean root baseline")
+        self.baseline = self.git("rev-parse", "HEAD")
+        self.git("branch", "codex/issue-33-cross-harness-portability", self.baseline)
+        (self.repo / "reviewed.txt").write_text("reviewed\n", encoding="utf-8")
+        self.git("add", "reviewed.txt")
+        self.git("commit", "-qm", "ordinary reviewed commit")
+        self.original_root = VALIDATOR.ROOT
+        VALIDATOR.ROOT = self.repo
+
+    def tearDown(self) -> None:
+        VALIDATOR.ROOT = self.original_root
+        self.temporary.cleanup()
+
+    def git(self, *arguments: str) -> str:
+        result = subprocess.run(
+            ["git", *arguments],
+            cwd=self.repo,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        return result.stdout.strip()
+
+    def validate(self) -> list[str]:
+        errors: list[str] = []
+        VALIDATOR.validate_git_candidate(errors)
+        return errors
+
+    def test_success_tracer_accepts_clean_root_and_linear_reviewed_commits(self) -> None:
+        self.assertEqual(self.validate(), [])
+
+    def test_denial_tracer_rejects_merge_commit(self) -> None:
+        self.git("switch", "-qc", "side", self.baseline)
+        (self.repo / "side.txt").write_text("side\n", encoding="utf-8")
+        self.git("add", "side.txt")
+        self.git("commit", "-qm", "side commit")
+        self.git("switch", "-q", "main")
+        self.git("merge", "--no-ff", "-qm", "merge side", "side")
+        self.assertTrue(any("single-parent commits" in error for error in self.validate()))
+
+    def test_denial_tracer_rejects_second_root(self) -> None:
+        self.git("switch", "--orphan", "diverged")
+        (self.repo / "diverged.txt").write_text("diverged\n", encoding="utf-8")
+        self.git("add", "diverged.txt")
+        self.git("commit", "-qm", "second root")
+        self.git("branch", "-D", "main")
+        self.git("branch", "-m", "main")
+        errors = self.validate()
+        self.assertTrue(any("exactly one clean-root baseline" in error for error in errors))
+        self.assertTrue(any("must descend" in error for error in errors))
+
+    def test_denial_tracer_rejects_branch_divergence(self) -> None:
+        self.git("switch", "-qc", "diverged", self.baseline)
+        (self.repo / "diverged.txt").write_text("diverged\n", encoding="utf-8")
+        self.git("add", "diverged.txt")
+        self.git("commit", "-qm", "diverged commit")
+        self.git("switch", "-q", "main")
+        self.git("branch", "-f", "codex/issue-33-cross-harness-portability", "diverged")
+        self.assertTrue(any("must not diverge" in error for error in self.validate()))
+
+    def test_recovery_tracer_accepts_restored_baseline_pointer(self) -> None:
+        main = self.git("rev-parse", "main")
+        self.git("branch", "-f", "codex/issue-33-cross-harness-portability", main)
+        self.assertTrue(any("parentless clean-root baseline" in error for error in self.validate()))
+        self.git("branch", "-f", "codex/issue-33-cross-harness-portability", self.baseline)
+        self.assertEqual(self.validate(), [])
 
 
 if __name__ == "__main__":

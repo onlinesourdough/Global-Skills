@@ -21,11 +21,12 @@ that must pass lead Review before an explicitly authorized Ship.
   local refs without printing matched values.
 - Remove stale three-skill visual assets from the current release tree and
   label example business data as synthetic.
-- Sanitize the two ordinary branch refs in place to one reviewed clean-root
-  candidate while keeping `onlinesourdough/Skills` as the only canonical
-  endpoint. The repository remains private pending GitHub Support purge and a
-  private-state re-audit; no rename, archive, replacement, or duplicate
-  repository is permitted.
+- Sanitize the two ordinary branch refs in place to one reviewed parentless
+  clean-root baseline. Retain the candidate branch there and allow `main` to
+  advance only through ordinary reviewed linear commits while keeping
+  `onlinesourdough/Skills` as the only canonical endpoint. The repository
+  remains private pending GitHub Support purge and a private-state re-audit;
+  no rename, archive, replacement, or duplicate repository is permitted.
 - Withhold historical `v0.1.0` continuity by deleting its private release and
   tag without replacement. `v0.2.0` is the first planned public release.
 

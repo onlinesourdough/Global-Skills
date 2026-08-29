@@ -15,7 +15,7 @@
   ],
   "source_boundary": {
     "reviewed_candidate": "issue #9 lead-reviewed four-skill tree",
-    "history_strategy": "single publish-safe clean-root commit with no parent",
+    "history_strategy": "one publish-safe parentless clean-root baseline followed by ordinary reviewed linear commits on main",
     "candidate_state": "committed private pre-publication candidate"
   },
   "atlas": {
@@ -37,7 +37,7 @@
   "history_visibility": {
     "status": "PRIVATE_SUPPORT_PURGE_PENDING",
     "visibility_change_legal": false,
-    "ordinary_refs": "refs/heads/main and refs/heads/codex/issue-33-cross-harness-portability converge on the verified clean-root candidate",
+    "ordinary_refs": "refs/heads/codex/issue-33-cross-harness-portability retains the verified clean-root baseline; refs/heads/main descends linearly from it through ordinary reviewed commits",
     "historical_release": "v0.1.0 release and tag are withheld/deleted and must not be recreated",
     "github_managed_residue": "refs/pull/2/head and refs/pull/3/head plus unreachable old objects and cached diffs/views remain blocked pending GitHub Support purge confirmation",
     "canonical_endpoint_action": "Keep the existing onlinesourdough/Skills repository private and in place; do not rename, archive, replace, duplicate, or move it.",
@@ -103,7 +103,7 @@
   },
   "ship_gate": [
     "lead Review accepted the complete r2 candidate and the owner authorized the exact r3 in-place sanitization",
-    "both authorized ordinary branch refs resolve to the independently verified clean-root candidate",
+    "the retained candidate branch resolves to the independently verified clean-root baseline and main descends linearly from it through ordinary reviewed commits",
     "the v0.1.0 GitHub release and local/remote tag are absent and must not be recreated",
     "Skills issue metadata #1, #4, #5, #6, #7, and #8 contains no blocked private references or inventory",
     "GitHub Support confirms purge of refs/pull/2/head, refs/pull/3/head, unreachable old objects, cached diffs, and cached views",

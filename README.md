@@ -81,6 +81,11 @@ the prior ref and hashes, install from the new immutable tag, and verify
 discovery plus representative behavior. Do not use a mutable branch as a
 release ref.
 
+Repository history retains one parentless clean-root baseline on
+`codex/issue-33-cross-harness-portability`. `main` advances from it only through
+ordinary reviewed single-parent commits, so normal non-force updates do not
+create another root or merge line.
+
 The existing `onlinesourdough/Skills` repository remains the canonical
 endpoint and may be published only in place. The owner selected no historical
 `v0.1.0` continuity: its private tag and release are removed during the r3

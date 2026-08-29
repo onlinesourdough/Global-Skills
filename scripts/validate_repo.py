@@ -23,6 +23,8 @@ SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 RELEASE_VERSION = "0.2.0"
 RELEASE_TAG = f"v{RELEASE_VERSION}"
 PREVIOUS_TAG = "v0.1.0"
+BASELINE_REF = "refs/heads/codex/issue-33-cross-harness-portability"
+MAIN_REF = "refs/heads/main"
 OFFICIAL_CLI_PACKAGE = "skills@1.5.23"
 OFFICIAL_CLI_REPOSITORY = "https://github.com/vercel-labs/skills"
 OFFICIAL_CLI_COMMIT = "435076e78988e1e6ec40d00b0b1d76bdbbc5419a"
@@ -275,10 +277,10 @@ def validate_json_files(errors: list[str]) -> None:
         fail(errors, "release.json: included_skills must be exactly the four current skills")
     if release.get("source_boundary") != {
         "reviewed_candidate": "issue #9 lead-reviewed four-skill tree",
-        "history_strategy": "single publish-safe clean-root commit with no parent",
+        "history_strategy": "one publish-safe parentless clean-root baseline followed by ordinary reviewed linear commits on main",
         "candidate_state": "committed private pre-publication candidate",
     }:
-        fail(errors, "release.json: clean-root source boundary mismatch")
+        fail(errors, "release.json: clean-root baseline/linear-history boundary mismatch")
 
     expected_atlas = {
         "canonical_repository": "https://github.com/onlinesourdough/Skills",
@@ -302,7 +304,7 @@ def validate_json_files(errors: list[str]) -> None:
     expected_history_visibility = {
         "status": "PRIVATE_SUPPORT_PURGE_PENDING",
         "visibility_change_legal": False,
-        "ordinary_refs": "refs/heads/main and refs/heads/codex/issue-33-cross-harness-portability converge on the verified clean-root candidate",
+        "ordinary_refs": "refs/heads/codex/issue-33-cross-harness-portability retains the verified clean-root baseline; refs/heads/main descends linearly from it through ordinary reviewed commits",
         "historical_release": "v0.1.0 release and tag are withheld/deleted and must not be recreated",
         "github_managed_residue": "refs/pull/2/head and refs/pull/3/head plus unreachable old objects and cached diffs/views remain blocked pending GitHub Support purge confirmation",
         "canonical_endpoint_action": "Keep the existing onlinesourdough/Skills repository private and in place; do not rename, archive, replace, duplicate, or move it.",
@@ -379,7 +381,7 @@ def validate_json_files(errors: list[str]) -> None:
         joined_gate = "\n".join(ship_gate)
         for marker in [
             "owner authorized the exact r3 in-place sanitization",
-            "both authorized ordinary branch refs",
+            "retained candidate branch resolves to the independently verified clean-root baseline and main descends linearly from it",
             "v0.1.0 GitHub release and local/remote tag are absent",
             "Skills issue metadata #1, #4, #5, #6, #7, and #8",
             "GitHub Support confirms purge of refs/pull/2/head, refs/pull/3/head",
@@ -404,13 +406,39 @@ def validate_git_candidate(errors: list[str]) -> None:
     if current_tag is not None:
         fail(errors, f"Git: candidate contract must not claim absent tag while {RELEASE_TAG} exists")
     head = git_output("rev-parse", "HEAD")
-    main = git_output("rev-parse", "refs/heads/main")
-    feature = git_output("rev-parse", "refs/heads/codex/issue-33-cross-harness-portability")
-    if not head or main != head or feature != head:
-        fail(errors, "Git: both authorized ordinary branches must converge on HEAD")
-    parents = git_output("rev-list", "--parents", "-n", "1", "HEAD")
-    if not parents or len(parents.split()) != 1:
-        fail(errors, "Git: candidate HEAD must be a clean-root commit with no parent")
+    main = git_output("rev-parse", MAIN_REF)
+    baseline = git_output("rev-parse", BASELINE_REF)
+    if not head or not main or not baseline:
+        fail(errors, "Git: HEAD, main, and the retained clean-root baseline branch must all resolve")
+        return
+    if head != main:
+        fail(errors, "Git: HEAD must equal main for candidate validation")
+
+    baseline_record = git_output("rev-list", "--parents", "-n", "1", baseline)
+    if not baseline_record or baseline_record.split() != [baseline]:
+        fail(errors, "Git: retained candidate branch must point to a parentless clean-root baseline")
+
+    roots = git_output("rev-list", "--max-parents=0", MAIN_REF, BASELINE_REF)
+    if roots is None or roots.splitlines() != [baseline]:
+        fail(errors, "Git: main and the retained candidate branch must share exactly one clean-root baseline")
+
+    if git_output("merge-base", "--is-ancestor", baseline, main) is None:
+        fail(errors, "Git: main must descend from the retained clean-root baseline")
+
+    divergence = git_output("rev-list", "--left-right", "--count", f"{baseline}...{main}")
+    try:
+        baseline_only, _main_only = (int(value) for value in (divergence or "").split())
+    except ValueError:
+        fail(errors, "Git: baseline/main divergence could not be determined")
+    else:
+        if baseline_only != 0:
+            fail(errors, "Git: retained baseline branch must not diverge from main")
+
+    lineage = git_output("rev-list", "--parents", f"{baseline}..{main}")
+    if lineage is None:
+        fail(errors, "Git: baseline-to-main lineage could not be read")
+    elif any(len(record.split()) != 2 for record in lineage.splitlines()):
+        fail(errors, "Git: main may advance from the baseline only through ordinary single-parent commits")
 
 
 def validate_public_docs(errors: list[str]) -> None:
@@ -450,7 +478,8 @@ def validate_public_docs(errors: list[str]) -> None:
         OFFICIAL_CLI_INTEGRITY, "planned-immutable-tag", "tag_exists_at_build",
         "local Git commit/ref fixture only", "After a later explicitly authorized Ship, public proof must",
         "does not claim model-backed behavior", "Publication remains **BLOCKED**",
-        "only canonical endpoint", "single publish-safe clean-root commit with no parent",
+        "only canonical endpoint", "parentless clean-root baseline",
+        "ordinary reviewed linear commits",
         "refs/heads/main", "refs/heads/codex/issue-33-cross-harness-portability",
         "refs/pull/2/head", "refs/pull/3/head", "GitHub Support",
         "Skills issue metadata #1, #4, #5, #6, #7, and #8",
@@ -540,7 +569,7 @@ def main() -> int:
         return 1
     print(
         "PASS repository structure, four-skill inventory, v0.2.0 candidate metadata, "
-        "marketplace policy, clean-root history, withheld v0.1.0, public docs, and ownership boundaries"
+        "marketplace policy, clean-root baseline and linear history, withheld v0.1.0, public docs, and ownership boundaries"
     )
     return 0
 
