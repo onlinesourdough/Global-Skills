@@ -1,7 +1,7 @@
 {
   "mode": "complex",
   "status": "decision-ready",
-  "prompt": "Choose a portable distribution plan for five reviewed skills.",
+  "prompt": "Choose a portable distribution plan for four reviewed skills.",
   "facts": [
     {
       "claim": "Claude Code discovers project skills under .claude/skills/.",
@@ -43,7 +43,7 @@
     }
   ],
   "spec": {
-    "outcome": "Distribute clarify, manage-skills, and route-models from one source.",
+    "outcome": "Distribute clarify, manage-skills, orchestrate-workers, and shape-offer from one source.",
     "non_goals": ["Owner context", "Lifecycle skills", "Central run history"],
     "acceptance": "Manifest, discovery, version, update, rollback, and hashes are proven in isolated fixtures.",
     "implementation_started": false

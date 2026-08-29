@@ -7,8 +7,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = {"clarify", "manage-skills", "orchestrate-workers", "route-models", "shape-offer"}
-INSTALL = "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --skill clarify manage-skills orchestrate-workers route-models shape-offer --agent claude-code cursor -y"
+SKILLS = {"clarify", "manage-skills", "orchestrate-workers", "shape-offer"}
+INSTALL = "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --skill clarify manage-skills orchestrate-workers shape-offer --agent claude-code cursor -y"
+RETIRED_SKILL = "route-models"
 
 
 class PortabilityContractTests(unittest.TestCase):
@@ -163,6 +164,26 @@ class PortabilityContractTests(unittest.TestCase):
         self.assertFalse((ROOT / ".cursor").exists())
         self.assertFalse((ROOT / ".agents" / "skills").exists())
         self.assertFalse(any((ROOT / "assets").glob("*")))
+
+    def test_retired_router_has_only_historical_or_denial_references(self) -> None:
+        self.assertFalse((ROOT / "skills" / RETIRED_SKILL).exists())
+        for retired in (
+            ROOT / "tests" / "fixtures" / "routing",
+            ROOT / "tests" / "test_route_models.py",
+            ROOT / "tests" / "test_routing.py",
+        ):
+            self.assertFalse(retired.exists(), retired)
+        for active in (
+            ROOT / "AGENTS.md",
+            ROOT / "README.md",
+            ROOT / "release.json",
+            ROOT / ".codex-plugin" / "plugin.json",
+            ROOT / ".agents" / "plugins" / "marketplace.json",
+            ROOT / "tests" / "run_all.py",
+        ):
+            self.assertNotIn(RETIRED_SKILL, active.read_text(encoding="utf-8"), active)
+        changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        self.assertIn("separate router candidate was removed before the first public release", changelog)
 
     def test_public_community_files_are_present_and_linked(self) -> None:
         for name in ("LICENSE", "CONTRIBUTING.md", "SECURITY.md", "SUPPORT.md", "CHANGELOG.md"):

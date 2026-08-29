@@ -1,6 +1,6 @@
 # Public release source and safety audit
 
-Observation date: 2026-08-28. This is private pre-publication candidate
+Observation date: 2026-08-29. This is private pre-publication candidate
 evidence, not a public-availability claim.
 
 ## Boundary and methods
@@ -47,9 +47,9 @@ The audit methods are:
   old refs, object IDs, metadata, and values are retained only in the private
   recovery set.
 - The r3 future-public history is intentionally one reviewed clean-root commit
-  with no parent. Both ordinary branch refs converge on that commit. This keeps
-  the complete lead-reviewed five-skill candidate while excluding obsolete
-  private history and generated residue.
+  with no parent. Both ordinary branch refs converge on that commit. Issue #9
+  builds the current four-skill candidate from that base while excluding
+  obsolete private history and generated residue.
 - The clean-root tree and every blob reachable from the two future-public
   ordinary refs contain zero blocked private repository identifiers, zero
   blocked inventory occurrences, zero direct private issue URLs, and zero
@@ -156,7 +156,7 @@ After a later explicitly authorized Ship, public proof must:
 3. prove anonymous API/HTTP/Git access at the unchanged canonical endpoint and
    verify default branch plus observed revision/access display;
 4. in a fresh Codex home, install the pinned `v0.2.0` plugin and compare all
-   five skill hashes to the public tag;
+   four skill hashes to the public tag;
 5. in a fresh disposable project, repeat pinned Skills CLI discovery,
    install, list, lock/ref, topology, and byte-hash checks; and
 6. verify public static Atlas reads the exact canonical repository and remains
@@ -173,5 +173,5 @@ can change after their pinned revisions.
 The private recovery set can restore exact pre-action refs and metadata only
 under a separately authorized rollback. Until public verification succeeds,
 the repository remains private. Consumer recovery is to remove only this
-plugin or its five named project skills. No public rollback release exists
+plugin or its four named project skills. No public rollback release exists
 before `v0.2.0`; `v0.1.0` must not be used or recreated.

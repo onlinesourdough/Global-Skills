@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = ("clarify", "manage-skills", "orchestrate-workers", "route-models", "shape-offer")
+SKILLS = ("clarify", "manage-skills", "orchestrate-workers", "shape-offer")
 RELEASE_VERSION = "0.2.0"
 CODEX = shutil.which("codex")
 CLAUDE = shutil.which("claude")

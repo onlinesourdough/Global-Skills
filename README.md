@@ -1,6 +1,6 @@
 # Online Sourdough Skills
 
-Five small, reviewed methods for agent workflows, distributed from one
+Four small, reviewed methods for agent workflows, distributed from one
 harness-neutral source. The canonical payload is always
 `skills/<slug>/SKILL.md`; the root Codex plugin and other installers discover
 that same payload instead of maintaining copies.
@@ -16,7 +16,6 @@ Review evidence uses local commit/ref fixtures and does not claim that the tag a
 | [`clarify`](skills/clarify/SKILL.md) | Resolve material facts and owner decisions before implementation | A decision-ready or explicitly blocked Spec |
 | [`manage-skills`](skills/manage-skills/SKILL.md) | Review provenance, overlap, installation, updates, removal, and rollback | Verified, authorized capability state |
 | [`orchestrate-workers`](skills/orchestrate-workers/SKILL.md) | Assign independent worker tasks with route, root, writer, recovery, and lead-Review boundaries | A bounded delegation result and lead Review |
-| [`route-models`](skills/route-models/SKILL.md) | Select model roles from fresh keyless capability, cost, availability, and risk evidence | A route record or visible stop/fallback |
 | [`shape-offer`](skills/shape-offer/SKILL.md) | Shape a trust-based offer from customer, delivery, economics, evidence, and owner constraints | A concise Offer Brief and smallest validation |
 
 ## Source and scope
@@ -62,11 +61,11 @@ source without installing:
 npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --list
 ```
 
-Install all five skills for Claude Code and Cursor in the current project, then
+Install all four skills for Claude Code and Cursor in the current project, then
 inspect discovery and the generated `skills-lock.json`:
 
 ```sh
-npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --skill clarify manage-skills orchestrate-workers route-models shape-offer --agent claude-code cursor -y
+npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --skill clarify manage-skills orchestrate-workers shape-offer --agent claude-code cursor -y
 npx skills@1.5.23 list --agent claude-code cursor
 ```
 
@@ -96,11 +95,11 @@ codex plugin remove onlinesourdough-skills@onlinesourdough-skills
 codex plugin marketplace remove onlinesourdough-skills
 ```
 
-For the Skills CLI project adapter, remove only this repository's five skill
+For the Skills CLI project adapter, remove only this repository's four skill
 names:
 
 ```sh
-npx skills@1.5.23 remove --skill clarify manage-skills orchestrate-workers route-models shape-offer --agent claude-code cursor -y
+npx skills@1.5.23 remove --skill clarify manage-skills orchestrate-workers shape-offer --agent claude-code cursor -y
 npx skills@1.5.23 list --agent claude-code cursor
 ```
 

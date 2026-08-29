@@ -16,9 +16,9 @@ EXPECTED_SKILLS = {
     "clarify",
     "manage-skills",
     "orchestrate-workers",
-    "route-models",
     "shape-offer",
 }
+RETIRED_SKILL = "route-models"
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 RELEASE_VERSION = "0.2.0"
 RELEASE_TAG = f"v{RELEASE_VERSION}"
@@ -35,7 +35,7 @@ CODEX_INSTALL = "codex plugin add onlinesourdough-skills@onlinesourdough-skills"
 SKILLS_DISCOVER = "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --list"
 SKILLS_INSTALL = (
     "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 "
-    "--skill clarify manage-skills orchestrate-workers route-models shape-offer "
+    "--skill clarify manage-skills orchestrate-workers shape-offer "
     "--agent claude-code cursor -y"
 )
 SKILLS_LIST = "npx skills@1.5.23 list --agent claude-code cursor"
@@ -136,6 +136,34 @@ def validate_structure(errors: list[str]) -> None:
     actual = {path.name for path in skills_root.iterdir() if path.is_dir()} if skills_root.is_dir() else set()
     if actual != EXPECTED_SKILLS:
         fail(errors, f"skills/: expected {sorted(EXPECTED_SKILLS)}, found {sorted(actual)}")
+
+    retired_paths = {
+        ROOT / "skills" / RETIRED_SKILL,
+        ROOT / "tests" / "fixtures" / "routing",
+        ROOT / "tests" / "test_route_models.py",
+        ROOT / "tests" / "test_routing.py",
+    }
+    for retired in sorted(retired_paths):
+        if retired.exists():
+            fail(errors, f"retired router surface remains: {retired.relative_to(ROOT)}")
+
+    retired_literal_allowlist = {
+        Path("CHANGELOG.md"),
+        Path("scripts/validate_repo.py"),
+        Path("tests/test_orchestrate_workers.py"),
+        Path("tests/test_portability_contract.py"),
+    }
+    for candidate in ROOT.rglob("*"):
+        if not candidate.is_file() or ".git" in candidate.parts:
+            continue
+        try:
+            text = candidate.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        relative = candidate.relative_to(ROOT)
+        if RETIRED_SKILL in text and relative not in retired_literal_allowlist:
+            fail(errors, f"active retired-router reference remains: {relative}")
+
     for slug in sorted(actual):
         skill_file = skills_root / slug / "SKILL.md"
         if not skill_file.is_file():
@@ -196,9 +224,9 @@ def validate_json_files(errors: list[str]) -> None:
     if not isinstance(interface, dict) or not interface.get("displayName") or not interface.get("defaultPrompt"):
         fail(errors, ".codex-plugin/plugin.json: interface metadata is required")
     if isinstance(interface, dict) and set(interface.get("capabilities", [])) != {
-        "Clarification", "Skill management", "Worker orchestration", "Model routing", "Offer shaping"
+        "Clarification", "Skill management", "Worker orchestration", "Offer shaping"
     }:
-        fail(errors, ".codex-plugin/plugin.json: capability inventory must match all five skills")
+        fail(errors, ".codex-plugin/plugin.json: capability inventory must match all four skills")
     if {"apps", "hooks", "mcpServers", "mcp", "schedules"}.intersection(manifest):
         fail(errors, ".codex-plugin/plugin.json: unsupported surface added")
 
@@ -244,9 +272,9 @@ def validate_json_files(errors: list[str]) -> None:
     if release.get("source_of_truth") != "skills/<slug>/SKILL.md" or release.get("license") != "MIT":
         fail(errors, "release.json: source/license mismatch")
     if release.get("included_skills") != sorted(EXPECTED_SKILLS):
-        fail(errors, "release.json: included_skills must be exactly the five current skills")
+        fail(errors, "release.json: included_skills must be exactly the four current skills")
     if release.get("source_boundary") != {
-        "reviewed_candidate": "r2 lead-reviewed five-skill tree",
+        "reviewed_candidate": "issue #9 lead-reviewed four-skill tree",
         "history_strategy": "single publish-safe clean-root commit with no parent",
         "candidate_state": "committed private pre-publication candidate",
     }:
@@ -511,7 +539,7 @@ def main() -> int:
             print(f"FAIL {error}")
         return 1
     print(
-        "PASS repository structure, five-skill inventory, v0.2.0 candidate metadata, "
+        "PASS repository structure, four-skill inventory, v0.2.0 candidate metadata, "
         "marketplace policy, clean-root history, withheld v0.1.0, public docs, and ownership boundaries"
     )
     return 0

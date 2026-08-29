@@ -1,7 +1,7 @@
 {
   "name": "onlinesourdough-skills",
   "version": "0.2.0",
-  "description": "Five portable, reviewed skills for clarification, skill management, worker orchestration, model routing, and offer shaping.",
+  "description": "Four portable, reviewed skills for clarification, skill management, worker orchestration, and offer shaping.",
   "author": {
     "name": "onlinesourdough",
     "url": "https://github.com/onlinesourdough"
@@ -13,10 +13,10 @@
   "interface": {
     "displayName": "onlinesourdough Skills",
     "shortDescription": "Reviewed global skills from one portable source.",
-    "longDescription": "Clarify decisions, manage skill provenance and rollback, orchestrate bounded workers, route model roles from fresh evidence, and shape trust-based offers.",
+    "longDescription": "Clarify decisions, manage skill provenance and rollback, orchestrate bounded workers with live-runtime route selection, and shape trust-based offers.",
     "developerName": "onlinesourdough",
     "category": "Productivity",
-    "capabilities": ["Clarification", "Skill management", "Worker orchestration", "Model routing", "Offer shaping"],
+    "capabilities": ["Clarification", "Skill management", "Worker orchestration", "Offer shaping"],
     "defaultPrompt": ["Use the relevant global skill for this task."]
   }
 }

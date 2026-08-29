@@ -11,11 +11,10 @@
     "clarify",
     "manage-skills",
     "orchestrate-workers",
-    "route-models",
     "shape-offer"
   ],
   "source_boundary": {
-    "reviewed_candidate": "r2 lead-reviewed five-skill tree",
+    "reviewed_candidate": "issue #9 lead-reviewed four-skill tree",
     "history_strategy": "single publish-safe clean-root commit with no parent",
     "candidate_state": "committed private pre-publication candidate"
   },
@@ -78,7 +77,7 @@
       "license": "MIT",
       "npm_integrity": "sha512-+hMNBSi35yfX0sKD+ZcRm9y5or7u313OdkcvrRvJAsAzGCaA8wRTu2OmVdN0KRbk9ybqKby5dijkn6OVvNTUmw==",
       "discover": "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --list",
-      "install": "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --skill clarify manage-skills orchestrate-workers route-models shape-offer --agent claude-code cursor -y",
+      "install": "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --skill clarify manage-skills orchestrate-workers shape-offer --agent claude-code cursor -y",
       "list": "npx skills@1.5.23 list --agent claude-code cursor",
       "candidate_proof": "disposable project and local clean-commit fixture with telemetry disabled; no global or consumer-repository write"
     },

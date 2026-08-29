@@ -23,7 +23,6 @@ def main() -> int:
     for forward in [
         ROOT / "tests" / "forward_clarify.py",
         ROOT / "tests" / "forward_orchestrate_workers.py",
-        ROOT / "tests" / "test_route_models.py",
     ]:
         result = subprocess.run([sys.executable, "-B", str(forward)], cwd=ROOT)
         if result.returncode:
