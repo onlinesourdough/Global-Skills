@@ -1,3 +1,7 @@
+![Online Sourdough Skills banner](assets/branding/skills-banner.png)
+
+<a href="assets/branding/skills-icon.png"><img src="assets/branding/skills-icon.png" alt="Online Sourdough Skills icon" width="48" height="48"></a>
+
 # Online Sourdough Skills
 
 Four small, reviewed methods for agent workflows, distributed from one

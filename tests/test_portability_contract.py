@@ -178,7 +178,10 @@ class PortabilityContractTests(unittest.TestCase):
         self.assertFalse((ROOT / ".claude").exists())
         self.assertFalse((ROOT / ".cursor").exists())
         self.assertFalse((ROOT / ".agents" / "skills").exists())
-        self.assertFalse(any((ROOT / "assets").glob("*")))
+        self.assertEqual(
+            {p.relative_to(ROOT / "assets").as_posix() for p in (ROOT / "assets").rglob("*") if p.is_file()},
+            {"branding/skills-banner.png", "branding/skills-icon.png"},
+        )
 
     def test_retired_router_has_only_historical_or_denial_references(self) -> None:
         self.assertFalse((ROOT / "skills" / RETIRED_SKILL).exists())

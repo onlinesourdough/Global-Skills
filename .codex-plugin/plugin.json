@@ -12,6 +12,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "onlinesourdough Skills",
+    "composerIcon": "./assets/branding/skills-icon.png",
+    "logo": "./assets/branding/skills-icon.png",
     "shortDescription": "Reviewed global skills from one portable source.",
     "longDescription": "Clarify decisions, manage skill provenance and rollback, orchestrate bounded workers with live-runtime route selection, and shape trust-based offers.",
     "developerName": "onlinesourdough",

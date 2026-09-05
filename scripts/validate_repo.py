@@ -189,6 +189,13 @@ def validate_structure(errors: list[str]) -> None:
         if "__pycache__" in path.parts or path.suffix in {".pyc", ".pyo"}:
             fail(errors, f"generated Python artifact is packaged: {path.relative_to(ROOT)}")
         if path.stat().st_size > 1_000_000:
+            # Stack branding r1: only the exact reviewed banner may exceed the cap.
+            if (
+                path.relative_to(ROOT).as_posix() == "assets/branding/skills-banner.png"
+                and hashlib.sha256(path.read_bytes()).hexdigest()
+                == "1f078680bf93ad817b7bbb3a7036025ac50aec58b01a9ef1f1cde4d45e86113e"
+            ):
+                continue
             fail(errors, f"release-tree file exceeds 1 MB: {path.relative_to(ROOT)}")
 
     ignore = (ROOT / ".gitignore").read_text(encoding="utf-8") if (ROOT / ".gitignore").is_file() else ""

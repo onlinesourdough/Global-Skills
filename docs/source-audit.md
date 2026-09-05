@@ -64,7 +64,10 @@ The audit methods are:
 - The six authorized Skills issues retain useful technical content while the
   blocked inventory, private owner/design-system issue references, and stale
   release-continuity claims are removed or genericized.
-- No current file exceeds one megabyte. Obsolete visual assets and Python
+- The generated stack branding r1 banner is the sole reviewed exception to
+  the one-megabyte file limit, enforced by exact path and SHA-256 in the
+  validator. The banner and icon are copied unchanged from lead-approved
+  exports and used in the README. Obsolete visual assets and Python
   bytecode are absent from the release tree; ignore rules cover generated
   caches and lock files.
 - Standard Git author metadata uses project-appropriate identities. No contact
