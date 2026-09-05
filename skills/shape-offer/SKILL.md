@@ -1,6 +1,6 @@
 ---
 name: shape-offer
-description: Use when a founder or business leader is shaping or revising an offer from incomplete business evidence and needs a concise, trust-based Offer Brief plus the smallest next validation from customer, problem, evidence, delivery, economics, owner-capacity, and constraints.
+description: Shape or revise a business offer into an evidence-bounded Offer Brief and a small validation suited to owner capacity.
 ---
 
 # Shape Offer
@@ -43,7 +43,7 @@ claim, price benchmark, conversion rate, or invented customer language.
 
 ## Shape the offer
 
-Work through these inputs in order, using the evidence ledger as you go:
+Address these inputs as relevant to the decision, using the evidence ledger:
 
 1. **Customer and real problem.** Name the specific person or situation the
    offer is for and the problem they are trying to solve. Separate the stated
@@ -105,46 +105,11 @@ context, name the missing material input instead.
 
 ## Return this Offer Brief
 
-Keep it concise and use this structure:
-
-```text
-Offer Brief — [decision-ready | needs-one-material-decision]
-
-Offer hypothesis:
-Decision and rationale:
-
-Customer and real problem:
-Desired outcome and existing evidence:
-Scope and delivery:
-Price logic and economics:
-Owner burden and constraints:
-Boundaries and unsupported promises:
-
-Known facts:
-- ...
-
-Assumptions (reversible):
-- ...
-
-Unknowns:
-- ...
-
-Smallest next validation:
-- Material question:
-- Reversible action:
-- Signal to observe:
-- Boundary and learn/stop rule:
-```
+Return a concise Offer Brief with the offer hypothesis, decision and rationale,
+the seven input areas above, and a distinguishable ledger of known facts,
+reversible assumptions, and unknowns. Include the Smallest next validation
+with its material question, action, signal, boundary, and learn/stop rule.
 
 Use `decision-ready` only when no unresolved unknown can materially change
 the offer. Otherwise use `needs-one-material-decision`, identify that one
 frontier question or validation, and do not imply that the offer is proven.
-
-## Final quality check
-
-Before returning the brief, confirm that all seven input areas are addressed,
-facts are distinguishable from assumptions and unknowns, every number or
-claim comes from the supplied context, the recommendation respects owner
-capacity, and the validation is the smallest reversible step. If a sentence
-would still be true without the available evidence, label it as a hypothesis
-rather than presenting it as proof.

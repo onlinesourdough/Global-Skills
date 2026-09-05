@@ -11,12 +11,17 @@ Review evidence uses local commit/ref fixtures and does not claim that the tag a
 
 ## Included skills
 
-| Skill | Use it for | Stops at |
+| Skill | Use it for | Returns |
 | --- | --- | --- |
 | [`clarify`](skills/clarify/SKILL.md) | Resolve material facts and owner decisions before implementation | A decision-ready or explicitly blocked Spec |
 | [`manage-skills`](skills/manage-skills/SKILL.md) | Review provenance, overlap, installation, updates, removal, and rollback | Verified, authorized capability state |
 | [`orchestrate-workers`](skills/orchestrate-workers/SKILL.md) | Assign independent worker tasks with route, root, writer, recovery, and lead-Review boundaries | A bounded delegation result and lead Review |
 | [`shape-offer`](skills/shape-offer/SKILL.md) | Shape a trust-based offer from customer, delivery, economics, evidence, and owner constraints | A concise Offer Brief and smallest validation |
+
+Clarification-only requests end at the Spec. When `clarify` supports an
+already-authorized build, the caller's lifecycle continues execution without
+a redundant implementation approval. Other scope and external-action gates
+still apply.
 
 ## Source and scope
 

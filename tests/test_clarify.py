@@ -23,9 +23,9 @@ class ArtifactParser(HTMLParser):
 
 
 class ClarifyForwardTests(unittest.TestCase):
-    def test_skill_contract_contains_bounded_no_implementation_and_visual_rules(self) -> None:
+    def test_skill_contract_contains_bounded_clarification_and_visual_rules(self) -> None:
         text = (ROOT / "skills" / "clarify" / "SKILL.md").read_text(encoding="utf-8")
-        for phrase in ["small mode", "complex mode", "at most three rounds", "Never begin implementation", "self-contained `.html`", "text fallback", "fact-check"]:
+        for phrase in ["small mode", "complex mode", "at most three rounds", "clarification-only request", "already-authorized implementation request", "self-contained `.html`", "text fallback", "fact-check"]:
             self.assertIn(phrase, text)
 
     def test_optional_visual_artifact_is_accessible_and_self_contained(self) -> None:

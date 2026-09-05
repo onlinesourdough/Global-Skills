@@ -1,6 +1,6 @@
 ---
 name: manage-skills
-description: Review, install, update, rollback, remove, or compare agent skills safely across harnesses. Use when a concrete capability gap changes the skills available to an agent, or when checking provenance, overlap, version, discovery, or recovery; do not use it as a passive audit report.
+description: Review and carry out a proposed agent-skill installation, update, removal, or rollback; use for capability changes, not passive audits.
 ---
 
 # Manage Skills
@@ -11,18 +11,18 @@ without a calling AIOS, plugin, personal skill, or central run-history store.
 ## Distinguish audit from management
 
 An audit detects and reports the current capability state without mutation.
-Use the local System/Project audit skill when the request is only to inspect or
-report. This skill manages a proposed change: review the gap, decide whether
-to reuse or install, and perform an authorized install, update, rollback,
+Use the caller's audit method when the request is only to inspect or report;
+no separate audit skill is required. This skill manages a proposed change:
+review the gap, decide whether to reuse or install, and perform an authorized install, update, rollback,
 removal, or overlap decision. Do not silently turn an audit into a change.
 
 ## Confirm the gap
 
 1. State the task the missing capability must perform and the proof it needs.
-2. Dynamically inventory, using current filesystem and harness evidence:
-   project-local skills, accessible containing-AIOS skills, harness-native and
-   personal/installed skills, repository instructions, and ordinary reasoning.
-   Do not hardcode an inventory from one project or AIOS.
+2. Check current project instructions and available capabilities first,
+   including ordinary reasoning. Inspect containing-AIOS, harness-native, or
+   personal/installed skills only when relevant and accessible within the
+   caller's authority. Do not hardcode an inventory or preload unrelated context.
 3. Compare the sufficient candidates with the task, boundaries, and risk. Reuse
    a sufficient capability and stop. If the gap is not concrete, report it and
    do not search or install.
@@ -43,8 +43,10 @@ Treat popularity or an audit badge as evidence to weigh, not approval.
 ## Get authority before changing state
 
 Present the candidate, material access, intended scope/files, version, risks,
-and rollback plan. Ask for explicit authorization before installing, updating,
-removing, or changing a global/personal skill. Prefer project scope so the
+and rollback plan. Apply existing explicit authorization when it covers the
+exact candidate, revision, action, access, and destination scope; do not ask
+again for the same approval. Ask before mutation only for missing authority
+or a material change to the approved proposal. Prefer project scope so the
 change is reviewable. Never use `--all`, global scope, or non-interactive
 approval flags unless that exact scope was explicitly authorized.
 
