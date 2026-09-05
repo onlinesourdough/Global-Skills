@@ -11,6 +11,11 @@ configuration, generated caches, or consumer lifecycle/context/history data.
 Changes should preserve explicit authority, stop, proof, and rollback
 boundaries.
 
+The current Global Skills inventory is `clarify`, `manage-skills`, and
+`shape-offer`. Worker orchestration is owned by the AIOS plugin route
+`aios-orchestrate-workers`; do not add an active `orchestrate-workers` payload
+here or make these three portable methods depend on that route.
+
 Before opening a pull request, run:
 
 ```sh

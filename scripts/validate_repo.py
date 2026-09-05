@@ -15,12 +15,11 @@ ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_SKILLS = {
     "clarify",
     "manage-skills",
-    "orchestrate-workers",
     "shape-offer",
 }
 RETIRED_SKILL = "route-models"
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-RELEASE_VERSION = "0.2.0"
+RELEASE_VERSION = "0.2.1"
 RELEASE_TAG = f"v{RELEASE_VERSION}"
 PREVIOUS_TAG = "v0.1.0"
 BASELINE_REF = "refs/heads/codex/issue-33-cross-harness-portability"
@@ -31,13 +30,13 @@ OFFICIAL_CLI_COMMIT = "435076e78988e1e6ec40d00b0b1d76bdbbc5419a"
 OFFICIAL_CLI_INTEGRITY = "sha512-+hMNBSi35yfX0sKD+ZcRm9y5or7u313OdkcvrRvJAsAzGCaA8wRTu2OmVdN0KRbk9ybqKby5dijkn6OVvNTUmw=="
 BLOCKED_PRIVATE_INVENTORY_SHA256 = "5e73f79777725cea98698c251aab59ad5d812fde7f48a92f2b4337142585d659"
 BLOCKED_PRIVATE_REPOSITORY_SHA256 = "23294037b9237da1e5d368f71d73c91061c2adc5bd2978a278f147406eb65682"
-CODEX_MARKETPLACE_ADD = "codex plugin marketplace add onlinesourdough/Skills --ref v0.2.0"
+CODEX_MARKETPLACE_ADD = "codex plugin marketplace add onlinesourdough/Global-Skills --ref v0.2.1"
 CODEX_LIST = "codex plugin list --available --json"
 CODEX_INSTALL = "codex plugin add onlinesourdough-skills@onlinesourdough-skills"
-SKILLS_DISCOVER = "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --list"
+SKILLS_DISCOVER = "npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.2.1 --list"
 SKILLS_INSTALL = (
-    "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 "
-    "--skill clarify manage-skills orchestrate-workers shape-offer "
+    "npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.2.1 "
+    "--skill clarify manage-skills shape-offer "
     "--agent claude-code cursor -y"
 )
 SKILLS_LIST = "npx skills@1.5.23 list --agent claude-code cursor"
@@ -152,7 +151,6 @@ def validate_structure(errors: list[str]) -> None:
     retired_literal_allowlist = {
         Path("CHANGELOG.md"),
         Path("scripts/validate_repo.py"),
-        Path("tests/test_orchestrate_workers.py"),
         Path("tests/test_portability_contract.py"),
     }
     for candidate in ROOT.rglob("*"):
@@ -225,7 +223,7 @@ def validate_json_files(errors: list[str]) -> None:
         fail(errors, ".codex-plugin/plugin.json: name/version mismatch")
     if manifest.get("skills") != "./skills/" or manifest.get("license") != "MIT":
         fail(errors, ".codex-plugin/plugin.json: skills/license mismatch")
-    if manifest.get("repository") != "https://github.com/onlinesourdough/Skills":
+    if manifest.get("repository") != "https://github.com/onlinesourdough/Global-Skills":
         fail(errors, ".codex-plugin/plugin.json: canonical repository is missing")
     if not isinstance(manifest.get("author"), dict) or not manifest["author"].get("name"):
         fail(errors, ".codex-plugin/plugin.json: author.name is required")
@@ -233,9 +231,9 @@ def validate_json_files(errors: list[str]) -> None:
     if not isinstance(interface, dict) or not interface.get("displayName") or not interface.get("defaultPrompt"):
         fail(errors, ".codex-plugin/plugin.json: interface metadata is required")
     if isinstance(interface, dict) and set(interface.get("capabilities", [])) != {
-        "Clarification", "Skill management", "Worker orchestration", "Offer shaping"
+        "Clarification", "Skill management", "Offer shaping"
     }:
-        fail(errors, ".codex-plugin/plugin.json: capability inventory must match all four skills")
+        fail(errors, ".codex-plugin/plugin.json: capability inventory must match all three skills")
     if {"apps", "hooks", "mcpServers", "mcp", "schedules"}.intersection(manifest):
         fail(errors, ".codex-plugin/plugin.json: unsupported surface added")
 
@@ -254,7 +252,7 @@ def validate_json_files(errors: list[str]) -> None:
             fail(errors, ".agents/plugins/marketplace.json: plugin entry shape mismatch")
         expected_source = {
             "source": "url",
-            "url": "https://github.com/onlinesourdough/Skills",
+            "url": "https://github.com/onlinesourdough/Global-Skills",
             "ref": RELEASE_TAG,
         }
         if entry.get("name") != manifest.get("name") or entry.get("source") != expected_source:
@@ -281,21 +279,21 @@ def validate_json_files(errors: list[str]) -> None:
     if release.get("source_of_truth") != "skills/<slug>/SKILL.md" or release.get("license") != "MIT":
         fail(errors, "release.json: source/license mismatch")
     if release.get("included_skills") != sorted(EXPECTED_SKILLS):
-        fail(errors, "release.json: included_skills must be exactly the four current skills")
+        fail(errors, "release.json: included_skills must be exactly the three current skills")
     if release.get("source_boundary") != {
-        "reviewed_candidate": "issue #9 lead-reviewed four-skill tree",
+        "reviewed_candidate": "issue #9 lead-reviewed four-skill tree; accepted ownership cleanup retains three Global Skills and moves worker orchestration to the AIOS plugin route aios-orchestrate-workers; current 0.2.1 preparation targets verified onlinesourdough/Global-Skills",
         "history_strategy": "one publish-safe parentless clean-root baseline followed by ordinary reviewed linear commits on main",
-        "candidate_state": "committed private pre-publication candidate",
+        "candidate_state": "local unreleased release-preparation candidate; no public tag or release; native adoption evidence is tracked separately",
     }:
         fail(errors, "release.json: clean-root baseline/linear-history boundary mismatch")
 
     expected_atlas = {
-        "canonical_repository": "https://github.com/onlinesourdough/Skills",
-        "endpoint_continuity": "The existing onlinesourdough/Skills repository remains canonical; publication does not rename, archive, replace, or duplicate it.",
-        "candidate_boundary": "The repository remains private and Build does not claim that the live Atlas integration works; both public access and Atlas behavior require post-Ship verification.",
+        "canonical_repository": "https://github.com/onlinesourdough/Global-Skills",
+        "endpoint_continuity": "The verified onlinesourdough/Global-Skills repository is the current canonical endpoint; publication does not rename, archive, replace, or duplicate it.",
+        "candidate_boundary": "The repository is currently public as observed; the local 0.2.1 candidate remains unreleased and new public release availability is held pending the recorded GitHub Support purge and private-state re-audit; Build does not claim that the live Atlas integration works.",
         "public_static_mode": {
             "source": "bounded anonymous GitHub API reads",
-            "default_repository": "onlinesourdough/Skills",
+            "default_repository": "onlinesourdough/Global-Skills",
             "display": "observed revision and access state",
             "write_policy": "read-only",
         },
@@ -314,8 +312,8 @@ def validate_json_files(errors: list[str]) -> None:
         "ordinary_refs": "refs/heads/codex/issue-33-cross-harness-portability retains the verified clean-root baseline; refs/heads/main descends linearly from it through ordinary reviewed commits",
         "historical_release": "v0.1.0 release and tag are withheld/deleted and must not be recreated",
         "github_managed_residue": "refs/pull/2/head and refs/pull/3/head plus unreachable old objects and cached diffs/views remain blocked pending GitHub Support purge confirmation",
-        "canonical_endpoint_action": "Keep the existing onlinesourdough/Skills repository private and in place; do not rename, archive, replace, duplicate, or move it.",
-        "support_gate": "No visibility change, v0.2.0 tag, or GitHub release is legal until GitHub Support confirms purge and the private-state re-audit passes.",
+        "canonical_endpoint_action": "Historical r3 requirement: keep the existing onlinesourdough/Skills repository private and in place; do not rename, archive, replace, duplicate, or move it.",
+        "support_gate": "Historical support gate: no visibility change, v0.2.0 tag, or GitHub release was legal until GitHub Support confirmed purge and the private-state re-audit passed; the purge proof remains required before new public release availability.",
         "decision_record": "docs/source-audit.md#authorized-in-place-sanitization-and-publication-gate",
     }
     if release.get("history_visibility") != expected_history_visibility:
@@ -325,7 +323,7 @@ def validate_json_files(errors: list[str]) -> None:
     if not isinstance(release_marketplace, dict):
         fail(errors, "release.json: marketplace contract missing")
         release_marketplace = {}
-    expected_source = {"source": "url", "url": "https://github.com/onlinesourdough/Skills", "ref": RELEASE_TAG}
+    expected_source = {"source": "url", "url": "https://github.com/onlinesourdough/Global-Skills", "ref": RELEASE_TAG}
     if release_marketplace.get("path") != ".agents/plugins/marketplace.json" or release_marketplace.get("source") != expected_source:
         fail(errors, "release.json: marketplace path/source mismatch")
     if release_marketplace.get("policy") != {"installation": "AVAILABLE", "authentication": "ON_INSTALL"}:
@@ -333,7 +331,7 @@ def validate_json_files(errors: list[str]) -> None:
     if release_marketplace.get("source_ref_kind") != "planned-immutable-tag" or release_marketplace.get("release_tag") != RELEASE_TAG:
         fail(errors, "release.json: planned immutable tag contract missing")
     if release_marketplace.get("tag_exists_at_build") is not False:
-        fail(errors, "release.json: candidate must not claim that v0.2.0 exists")
+        fail(errors, f"release.json: candidate must not claim that {RELEASE_TAG} exists")
     if not release_marketplace.get("recovery") or "GitHub Support confirms purge" not in release_marketplace.get("ship_requirement", ""):
         fail(errors, "release.json: Ship/recovery boundary missing")
 
@@ -393,7 +391,7 @@ def validate_json_files(errors: list[str]) -> None:
             "Skills issue metadata #1, #4, #5, #6, #7, and #8",
             "GitHub Support confirms purge of refs/pull/2/head, refs/pull/3/head",
             "private-state re-audit reports zero blocked findings",
-            "remains private and the only canonical endpoint",
+            "current canonical endpoint while the historical onlinesourdough/Skills sanitization protections remain intact",
             "later exact Ship authority",
         ]:
             if marker not in joined_gate:
@@ -461,12 +459,12 @@ def validate_public_docs(errors: list[str]) -> None:
     for marker in [
         "canonical payload", "Codex plugin", "Skills CLI", "pinned release",
         "Update and rollback", "Relation to Skills Atlas", "Source and scope",
-        "v0.2.0", "does not claim that the tag already exists", CODEX_MARKETPLACE_ADD,
+        "v0.2.1", "does not claim that the tag already exists", CODEX_MARKETPLACE_ADD,
         CODEX_INSTALL, SKILLS_DISCOVER, SKILLS_INSTALL, "ON_INSTALL", "MIT License",
         "bounded anonymous GitHub API reads", "observed revision and access state",
         "remain read-only", "exactly one validated skill edit", "new branch",
         "open a pull request", "never writes the default branch",
-        "does not claim that the Skills repository is public",
+        "repository is currently observed public",
         "live Atlas integration works",
     ]:
         if marker.lower() not in normalized_readme.lower():
@@ -515,7 +513,7 @@ def validate_public_docs(errors: list[str]) -> None:
             fail(errors, f"public release contract: forbidden private-history acceptance option remains: {forbidden}")
 
     private_issue_url = re.compile(
-        r"https://github\.com/onlinesourdough/(?!Skills(?:-Atlas)?(?:/|$))[^/\s)]+/issues/\d+"
+        r"https://github\.com/onlinesourdough/(?!Global-Skills(?:/|$)|Skills(?:-Atlas)?(?:/|$))[^/\s)]+/issues/\d+"
     )
     inventory_candidate = re.compile(
         r"\b[A-Z][A-Za-z0-9]*(?:,\s*[A-Z][A-Za-z0-9]*){4}\b"
@@ -545,7 +543,7 @@ def validate_public_docs(errors: list[str]) -> None:
             fail(errors, f"CONTRIBUTING.md: missing validation command {command}")
     if "Report a vulnerability" not in security or "do not disclose" not in security.lower():
         fail(errors, "SECURITY.md: private reporting guidance is incomplete")
-    if "https://github.com/onlinesourdough/Skills/issues" not in support or "best-effort" not in support:
+    if "https://github.com/onlinesourdough/Global-Skills/issues" not in support or "best-effort" not in support:
         fail(errors, "SUPPORT.md: public issue/support boundary is incomplete")
 
     for markdown in [
@@ -575,7 +573,7 @@ def main() -> int:
             print(f"FAIL {error}")
         return 1
     print(
-        "PASS repository structure, four-skill inventory, v0.2.0 candidate metadata, "
+        "PASS repository structure, three-skill inventory, v0.2.1 candidate metadata, "
         "marketplace policy, clean-root baseline and linear history, withheld v0.1.0, public docs, and ownership boundaries"
     )
     return 0

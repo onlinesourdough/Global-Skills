@@ -9,8 +9,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = {"clarify", "manage-skills", "orchestrate-workers", "shape-offer"}
-INSTALL = "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --skill clarify manage-skills orchestrate-workers shape-offer --agent claude-code cursor -y"
+SKILLS = {"clarify", "manage-skills", "shape-offer"}
+INSTALL = "npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.2.1 --skill clarify manage-skills shape-offer --agent claude-code cursor -y"
 RETIRED_SKILL = "route-models"
 VALIDATOR_PATH = ROOT / "scripts" / "validate_repo.py"
 VALIDATOR_SPEC = importlib.util.spec_from_file_location("validate_repo_lineage", VALIDATOR_PATH)
@@ -29,15 +29,16 @@ class PortabilityContractTests(unittest.TestCase):
         cls.marketplace = json.loads((ROOT / ".agents" / "plugins" / "marketplace.json").read_text(encoding="utf-8"))
 
     def test_candidate_version_inventory_and_refs_are_consistent(self) -> None:
-        self.assertEqual(self.release["version"], "0.2.0")
+        self.assertEqual(self.release["version"], "0.2.1")
         self.assertEqual(self.release["status"], "candidate")
         self.assertFalse(self.release["released"])
         self.assertIsNone(self.release["release_date"])
         self.assertEqual(set(self.release["included_skills"]), SKILLS)
-        self.assertEqual(self.manifest["version"], "0.2.0")
+        self.assertEqual(self.manifest["version"], "0.2.1")
         self.assertEqual(self.manifest["license"], "MIT")
-        self.assertEqual(self.marketplace["plugins"][0]["source"]["ref"], "v0.2.0")
-        self.assertEqual(self.release["marketplace"]["release_tag"], "v0.2.0")
+        self.assertEqual(self.marketplace["plugins"][0]["source"]["url"], "https://github.com/onlinesourdough/Global-Skills")
+        self.assertEqual(self.marketplace["plugins"][0]["source"]["ref"], "v0.2.1")
+        self.assertEqual(self.release["marketplace"]["release_tag"], "v0.2.1")
         self.assertEqual(self.release["marketplace"]["source_ref_kind"], "planned-immutable-tag")
         self.assertFalse(self.release["marketplace"]["tag_exists_at_build"])
 
@@ -59,7 +60,7 @@ class PortabilityContractTests(unittest.TestCase):
             "first_public_release": "v0.2.0",
         })
         candidate = subprocess.run(
-            ["git", "rev-parse", "--verify", "refs/tags/v0.2.0^{commit}"],
+            ["git", "rev-parse", "--verify", "refs/tags/v0.2.1^{commit}"],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -67,14 +68,15 @@ class PortabilityContractTests(unittest.TestCase):
         )
         self.assertNotEqual(candidate.returncode, 0)
         self.assertIn("does not claim that the tag already exists", self.readme)
-        self.assertIn("`v0.2.0` remains an absent planned tag", " ".join(self.audit.split()))
+        self.assertIn("`v0.2.1` remains an absent planned tag", " ".join(self.audit.split()))
+        self.assertIn("existing `0.2.0` installation", self.readme)
 
     def test_public_install_contract_is_pinned_and_candidate_bounded(self) -> None:
         text = "\n".join((self.readme, self.audit, json.dumps(self.release)))
         for marker in [
             INSTALL,
-            "npx skills@1.5.23 add onlinesourdough/Skills#v0.2.0 --list",
-            "codex plugin marketplace add onlinesourdough/Skills --ref v0.2.0",
+            "npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.2.1 --list",
+            "codex plugin marketplace add onlinesourdough/Global-Skills --ref v0.2.1",
             "codex plugin add onlinesourdough-skills@onlinesourdough-skills",
             "skills@1.5.23",
             "435076e78988e1e6ec40d00b0b1d76bdbbc5419a",
@@ -94,12 +96,12 @@ class PortabilityContractTests(unittest.TestCase):
     def test_atlas_contract_is_canonical_observed_and_branch_protected(self) -> None:
         atlas = self.release["atlas"]
         normalized_readme = " ".join(self.readme.split())
-        self.assertEqual(atlas["canonical_repository"], "https://github.com/onlinesourdough/Skills")
-        self.assertIn("remains canonical", atlas["endpoint_continuity"])
+        self.assertEqual(atlas["canonical_repository"], "https://github.com/onlinesourdough/Global-Skills")
+        self.assertIn("current canonical endpoint", atlas["endpoint_continuity"])
         self.assertIn("does not rename, archive, replace, or duplicate", atlas["endpoint_continuity"])
         self.assertEqual(atlas["public_static_mode"], {
             "source": "bounded anonymous GitHub API reads",
-            "default_repository": "onlinesourdough/Skills",
+            "default_repository": "onlinesourdough/Global-Skills",
             "display": "observed revision and access state",
             "write_policy": "read-only",
         })
@@ -116,7 +118,7 @@ class PortabilityContractTests(unittest.TestCase):
             "exactly one validated skill edit",
             "new branch and open a pull request",
             "never writes the default branch",
-            "does not claim that the Skills repository is public",
+            "repository is currently observed public",
             "live Atlas integration works",
         ]:
             self.assertIn(marker, normalized_readme)
@@ -129,7 +131,7 @@ class PortabilityContractTests(unittest.TestCase):
         self.assertIn("main descends linearly", history["ordinary_refs"])
         self.assertIn("withheld/deleted", history["historical_release"])
         self.assertIn("GitHub Support purge confirmation", history["github_managed_residue"])
-        self.assertIn("Keep the existing onlinesourdough/Skills repository private and in place", history["canonical_endpoint_action"])
+        self.assertIn("Historical r3 requirement: keep the existing onlinesourdough/Skills repository private and in place", history["canonical_endpoint_action"])
         gate = "\n".join(self.release["ship_gate"])
         for marker in [
             "owner authorized the exact r3 in-place sanitization",
@@ -137,6 +139,7 @@ class PortabilityContractTests(unittest.TestCase):
             "v0.1.0 GitHub release and local/remote tag are absent",
             "Skills issue metadata #1, #4, #5, #6, #7, and #8",
             "GitHub Support confirms purge of refs/pull/2/head, refs/pull/3/head",
+            "current canonical endpoint",
         ]:
             self.assertIn(marker, gate)
         normalized_readme = " ".join(self.readme.split())
@@ -182,6 +185,21 @@ class PortabilityContractTests(unittest.TestCase):
             {p.relative_to(ROOT / "assets").as_posix() for p in (ROOT / "assets").rglob("*") if p.is_file()},
             {"branding/skills-banner.png", "branding/skills-icon.png"},
         )
+
+    def test_worker_orchestration_is_outside_global_skills(self) -> None:
+        for retired in (
+            ROOT / "skills" / "orchestrate-workers",
+            ROOT / "tests" / "fixtures" / "orchestrate-workers",
+            ROOT / "tests" / "forward_orchestrate_workers.py",
+            ROOT / "tests" / "test_orchestrate_workers.py",
+        ):
+            self.assertFalse(retired.exists(), retired)
+        current = "\n".join(
+            (ROOT / path).read_text(encoding="utf-8")
+            for path in ("AGENTS.md", "README.md", "CONTRIBUTING.md", "CHANGELOG.md", "release.json")
+        )
+        self.assertIn("aios-orchestrate-workers", current)
+        self.assertNotIn("skills/orchestrate-workers/SKILL.md", current)
 
     def test_retired_router_has_only_historical_or_denial_references(self) -> None:
         self.assertFalse((ROOT / "skills" / RETIRED_SKILL).exists())

@@ -70,7 +70,7 @@ class SourceAuditTests(unittest.TestCase):
         gate = "\n".join(release["ship_gate"])
         self.assertIn("GitHub Support confirms purge", gate)
         self.assertIn("private-state re-audit reports zero blocked findings", gate)
-        self.assertIn("remains private and the only canonical endpoint", gate)
+        self.assertIn("current canonical endpoint", gate)
         self.assertNotIn("historical names is acceptable", text)
 
     def test_current_public_docs_remove_private_pilot_and_consumer_inventory(self) -> None:
@@ -84,9 +84,36 @@ class SourceAuditTests(unittest.TestCase):
         ]:
             self.assertNotIn(stale, current)
 
+    def test_current_cleanup_keeps_prior_four_skill_evidence_explicit(self) -> None:
+        audit = (ROOT / "docs" / "source-audit.md").read_text(encoding="utf-8")
+        normalized = " ".join(audit.split())
+        for marker in [
+            "Current three-skill ownership cleanup",
+            "accepted current Global Skills inventory",
+            "aios-orchestrate-workers",
+            "Current release-prep addendum",
+            "next candidate is `0.2.1`",
+            "Global-Skills",
+            "installed `0.2.0` content is treated as legacy four-skill",
+            "no cache identity reuse",
+            "no published tags",
+            "repository as PUBLIC",
+            "local `0.2.1` candidate remains unreleased",
+            "previously reviewed four-skill candidate",
+            "not treated as proof that those checks ran against this three-skill source",
+            "Current source checks and limitations",
+            "python3 scripts/validate_repo.py",
+            "python3 scripts/secret_scan.py",
+            "python3 tests/run_all.py",
+            "complete discovered suite ran 35 tests with 35 passing",
+            "model-backed forward check",
+            "runtime acceptance was performed",
+        ]:
+            self.assertIn(marker, normalized)
+
     def test_entire_current_tree_has_no_private_issue_url_or_inventory(self) -> None:
         private_issue_url = re.compile(
-            r"https://github\.com/onlinesourdough/(?!Skills(?:-Atlas)?(?:/|$))[^/\s)]+/issues/\d+"
+            r"https://github\.com/onlinesourdough/(?!Global-Skills(?:/|$)|Skills(?:-Atlas)?(?:/|$))[^/\s)]+/issues/\d+"
         )
         inventory_candidate = re.compile(
             r"\b[A-Z][A-Za-z0-9]*(?:,\s*[A-Z][A-Za-z0-9]*){4}\b"

@@ -10,8 +10,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = ("clarify", "manage-skills", "orchestrate-workers", "shape-offer")
-RELEASE_VERSION = "0.2.0"
+SKILLS = ("clarify", "manage-skills", "shape-offer")
+RELEASE_VERSION = "0.2.1"
+UPGRADED_VERSION = "0.2.2"
 CODEX = shutil.which("codex")
 CLAUDE = shutil.which("claude")
 CURSOR = shutil.which("cursor")
@@ -46,7 +47,7 @@ class DistributionFixtureTests(unittest.TestCase):
         entry = marketplace["plugins"][0]
         self.assertEqual(entry["name"], "onlinesourdough-skills")
         self.assertEqual(entry["source"]["source"], "url")
-        self.assertEqual(entry["source"]["url"], "https://github.com/onlinesourdough/Skills")
+        self.assertEqual(entry["source"]["url"], "https://github.com/onlinesourdough/Global-Skills")
         self.assertEqual(entry["source"]["ref"], "v" + RELEASE_VERSION)
         self.assertEqual(entry["policy"], {"installation": "AVAILABLE", "authentication": "ON_INSTALL"})
         self.assertEqual(entry["category"], "Productivity")
@@ -109,10 +110,19 @@ class DistributionFixtureTests(unittest.TestCase):
             available = run([CODEX, "plugin", "list", "--available", "--json"], env=safe_env)
             self.assertEqual(available.returncode, 0, available.stderr)
             available_payload = json.loads(available.stdout)
-            self.assertEqual(available_payload["available"][0]["pluginId"], "onlinesourdough-skills@onlinesourdough-skills")
-            self.assertEqual(available_payload["available"][0]["installPolicy"], "AVAILABLE")
+            fixture_plugins = [
+                plugin for plugin in available_payload["available"]
+                if plugin.get("name") == catalog["plugins"][0]["name"]
+                and plugin.get("marketplaceName") == catalog["name"]
+                and plugin.get("marketplaceSource", {}).get("source") == str(mirror.resolve())
+            ]
+            self.assertEqual(len(fixture_plugins), 1, available_payload)
+            fixture_plugin = fixture_plugins[0]
+            self.assertEqual(fixture_plugin["pluginId"], "onlinesourdough-skills@onlinesourdough-skills")
+            self.assertEqual(fixture_plugin["installPolicy"], "AVAILABLE")
+            plugin_id = fixture_plugin["pluginId"]
 
-            installed = run([CODEX, "plugin", "add", "onlinesourdough-skills@onlinesourdough-skills", "--json"], env=safe_env)
+            installed = run([CODEX, "plugin", "add", plugin_id, "--json"], env=safe_env)
             self.assertEqual(installed.returncode, 0, installed.stderr)
             installed_payload = json.loads(installed.stdout)
             self.assertEqual(installed_payload["version"], RELEASE_VERSION)
@@ -122,40 +132,40 @@ class DistributionFixtureTests(unittest.TestCase):
 
             manifest_path = mirror / ".codex-plugin" / "plugin.json"
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            manifest["version"] = "0.2.1"
+            manifest["version"] = UPGRADED_VERSION
             manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
             release_path = mirror / "release.json"
             release = json.loads(release_path.read_text(encoding="utf-8"))
-            release["version"] = "0.2.1"
+            release["version"] = UPGRADED_VERSION
             release_path.write_text(json.dumps(release, indent=2) + "\n", encoding="utf-8")
             changed_skill = mirror / "skills" / "clarify" / "SKILL.md"
             changed_skill.write_text(changed_skill.read_text(encoding="utf-8") + "\nTemporary isolated upgrade proof.\n", encoding="utf-8")
             git(mirror, "-c", "user.name=fixture", "-c", "user.email=fixture@example.invalid", "add", ".")
-            git(mirror, "-c", "user.name=fixture", "-c", "user.email=fixture@example.invalid", "commit", "-qm", "0.2.1")
+            git(mirror, "-c", "user.name=fixture", "-c", "user.email=fixture@example.invalid", "commit", "-qm", UPGRADED_VERSION)
             new_commit = git(mirror, "rev-parse", "HEAD")
             self.assertNotEqual(new_commit, old_commit)
 
-            removed = run([CODEX, "plugin", "remove", "onlinesourdough-skills@onlinesourdough-skills", "--json"], env=safe_env)
+            removed = run([CODEX, "plugin", "remove", plugin_id, "--json"], env=safe_env)
             self.assertEqual(removed.returncode, 0, removed.stderr)
             removed_marketplace = run([CODEX, "plugin", "marketplace", "remove", "onlinesourdough-skills", "--json"], env=safe_env)
             self.assertEqual(removed_marketplace.returncode, 0, removed_marketplace.stderr)
             readded_marketplace = run([CODEX, "plugin", "marketplace", "add", str(mirror), "--json"], env=safe_env)
             self.assertEqual(readded_marketplace.returncode, 0, readded_marketplace.stderr)
-            installed_new = run([CODEX, "plugin", "add", "onlinesourdough-skills@onlinesourdough-skills", "--json"], env=safe_env)
+            installed_new = run([CODEX, "plugin", "add", plugin_id, "--json"], env=safe_env)
             self.assertEqual(installed_new.returncode, 0, installed_new.stderr)
             new_payload = json.loads(installed_new.stdout)
-            self.assertEqual(new_payload["version"], "0.2.1")
+            self.assertEqual(new_payload["version"], UPGRADED_VERSION)
             new_root = Path(new_payload["installedPath"])
             self.assertNotEqual(digest(new_root / "skills" / "clarify" / "SKILL.md"), digest(ROOT / "skills" / "clarify" / "SKILL.md"))
 
             git(mirror, "checkout", "-q", old_commit)
-            removed_again = run([CODEX, "plugin", "remove", "onlinesourdough-skills@onlinesourdough-skills", "--json"], env=safe_env)
+            removed_again = run([CODEX, "plugin", "remove", plugin_id, "--json"], env=safe_env)
             self.assertEqual(removed_again.returncode, 0, removed_again.stderr)
             removed_marketplace_again = run([CODEX, "plugin", "marketplace", "remove", "onlinesourdough-skills", "--json"], env=safe_env)
             self.assertEqual(removed_marketplace_again.returncode, 0, removed_marketplace_again.stderr)
             readded_marketplace_again = run([CODEX, "plugin", "marketplace", "add", str(mirror), "--json"], env=safe_env)
             self.assertEqual(readded_marketplace_again.returncode, 0, readded_marketplace_again.stderr)
-            installed_old = run([CODEX, "plugin", "add", "onlinesourdough-skills@onlinesourdough-skills", "--json"], env=safe_env)
+            installed_old = run([CODEX, "plugin", "add", plugin_id, "--json"], env=safe_env)
             self.assertEqual(installed_old.returncode, 0, installed_old.stderr)
             old_payload = json.loads(installed_old.stdout)
             self.assertEqual(old_payload["version"], RELEASE_VERSION)

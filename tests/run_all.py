@@ -22,7 +22,6 @@ def main() -> int:
         return secret_scan.returncode
     for forward in [
         ROOT / "tests" / "forward_clarify.py",
-        ROOT / "tests" / "forward_orchestrate_workers.py",
     ]:
         result = subprocess.run([sys.executable, "-B", str(forward)], cwd=ROOT)
         if result.returncode:

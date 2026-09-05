@@ -1,6 +1,6 @@
 # Support
 
-Use [GitHub Issues](https://github.com/onlinesourdough/Skills/issues) for
+Use [GitHub Issues](https://github.com/onlinesourdough/Global-Skills/issues) for
 reproducible bugs, documentation gaps, portability problems, and focused
 enhancement proposals. Include the release tag or commit, active harness and
 CLI version, the affected skill, expected behavior, observed behavior, and the

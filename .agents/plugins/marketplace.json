@@ -8,8 +8,8 @@
       "name": "onlinesourdough-skills",
       "source": {
         "source": "url",
-        "url": "https://github.com/onlinesourdough/Skills",
-        "ref": "v0.2.0"
+        "url": "https://github.com/onlinesourdough/Global-Skills",
+        "ref": "v0.2.1"
       },
       "policy": {
         "installation": "AVAILABLE",
