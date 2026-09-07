@@ -9,8 +9,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = {"clarify", "manage-skills", "shape-offer"}
-INSTALL = "npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.2.1 --skill clarify manage-skills shape-offer --agent claude-code cursor -y"
+SKILLS = {"clarify", "shape-offer"}
+INSTALL = "npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.3.0 --skill clarify shape-offer --agent claude-code cursor -y"
 RETIRED_SKILL = "route-models"
 VALIDATOR_PATH = ROOT / "scripts" / "validate_repo.py"
 VALIDATOR_SPEC = importlib.util.spec_from_file_location("validate_repo_lineage", VALIDATOR_PATH)
@@ -29,16 +29,18 @@ class PortabilityContractTests(unittest.TestCase):
         cls.marketplace = json.loads((ROOT / ".agents" / "plugins" / "marketplace.json").read_text(encoding="utf-8"))
 
     def test_candidate_version_inventory_and_refs_are_consistent(self) -> None:
-        self.assertEqual(self.release["version"], "0.2.1")
+        self.assertEqual(self.release["version"], "0.3.0")
         self.assertEqual(self.release["status"], "candidate")
         self.assertFalse(self.release["released"])
         self.assertIsNone(self.release["release_date"])
         self.assertEqual(set(self.release["included_skills"]), SKILLS)
-        self.assertEqual(self.manifest["version"], "0.2.1")
+        self.assertFalse((ROOT / "skills" / "manage-skills").exists())
+        self.assertEqual(self.manifest["version"], "0.3.0")
+        self.assertNotIn("Skill management", self.manifest["interface"]["capabilities"])
         self.assertEqual(self.manifest["license"], "MIT")
         self.assertEqual(self.marketplace["plugins"][0]["source"]["url"], "https://github.com/onlinesourdough/Global-Skills")
-        self.assertEqual(self.marketplace["plugins"][0]["source"]["ref"], "v0.2.1")
-        self.assertEqual(self.release["marketplace"]["release_tag"], "v0.2.1")
+        self.assertEqual(self.marketplace["plugins"][0]["source"]["ref"], "v0.3.0")
+        self.assertEqual(self.release["marketplace"]["release_tag"], "v0.3.0")
         self.assertEqual(self.release["marketplace"]["source_ref_kind"], "planned-immutable-tag")
         self.assertFalse(self.release["marketplace"]["tag_exists_at_build"])
 
@@ -60,7 +62,7 @@ class PortabilityContractTests(unittest.TestCase):
             "first_public_release": "v0.2.0",
         })
         candidate = subprocess.run(
-            ["git", "rev-parse", "--verify", "refs/tags/v0.2.1^{commit}"],
+            ["git", "rev-parse", "--verify", "refs/tags/v0.3.0^{commit}"],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -68,15 +70,15 @@ class PortabilityContractTests(unittest.TestCase):
         )
         self.assertNotEqual(candidate.returncode, 0)
         self.assertIn("does not claim that the tag already exists", self.readme)
-        self.assertIn("`v0.2.1` remains an absent planned tag", " ".join(self.audit.split()))
+        self.assertIn("`v0.3.0` remains an absent planned tag", " ".join(self.audit.split()))
         self.assertIn("existing `0.2.0` installation", self.readme)
 
     def test_public_install_contract_is_pinned_and_candidate_bounded(self) -> None:
         text = "\n".join((self.readme, self.audit, json.dumps(self.release)))
         for marker in [
             INSTALL,
-            "npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.2.1 --list",
-            "codex plugin marketplace add onlinesourdough/Global-Skills --ref v0.2.1",
+            "npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.3.0 --list",
+            "codex plugin marketplace add onlinesourdough/Global-Skills --ref v0.3.0",
             "codex plugin add onlinesourdough-skills@onlinesourdough-skills",
             "skills@1.5.23",
             "435076e78988e1e6ec40d00b0b1d76bdbbc5419a",
@@ -85,6 +87,11 @@ class PortabilityContractTests(unittest.TestCase):
             "model-backed behavior",
             "Claude Code",
             "Cursor Agent",
+            "pi install git:github.com/onlinesourdough/Global-Skills@v0.3.0 -l",
+            "pi list",
+            "pi update --extensions",
+            "pi remove git:github.com/onlinesourdough/Global-Skills@v0.3.0 -l",
+            ".pi/settings.json",
         ]:
             self.assertIn(marker, text)
 

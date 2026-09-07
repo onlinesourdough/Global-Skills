@@ -1,0 +1,20 @@
+{
+  "name": "onlinesourdough-skills",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Two portable, reviewed skills for visual explanation and offer shaping.",
+  "license": "MIT",
+  "keywords": [
+    "pi-package"
+  ],
+  "files": [
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "pi": {
+    "skills": [
+      "./skills"
+    ]
+  }
+}

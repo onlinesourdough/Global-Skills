@@ -1,84 +1,68 @@
 ---
 name: clarify
-description: Resolve material uncertainty in a request or decision into a bounded Spec before dependent work proceeds.
+description: Explain a topic or decision for a named audience in one accessible self-contained visual HTML artifact.
 ---
 
 # Clarify
 
-Turn uncertainty into a shared, decision-ready Spec. Use this skill before
-implementation when a wrong assumption would materially change the result.
-Do not use it to delay a clear, low-risk request.
+Turn a topic, process, or decision into one concise visual explanation for a
+named audience. This is an ordinary, discoverable explainer skill: use it when
+an explanation would help a reader understand what changes, why it matters, or
+what to do next. It is not a mandatory interview or implementation workflow,
+and it does not create a second approval gate.
 
-## Keep the boundary
+## Understand before drawing
 
-- Research verifiable facts yourself with available files, tools, and primary
-  sources. Cite each material fact with its source and observation date.
-- Separate facts, assumptions, recommendations, and owner decisions.
-- Ask the owner only for decisions that cannot be established from evidence.
-- Give a recommended option and the consequence of each material choice.
-- For a clarification-only request, stop at the Spec; do not infer permission
-  to implement or take external action.
-- Within an already-authorized implementation request, return the resolved
-  Spec to the caller and continue the authorized work under the caller's
-  lifecycle. Clarification does not require a second implementation approval.
-  Ask only for missing authority or unresolved material decisions; existing
-  authorization does not expand scope or permit additional external actions.
+- Identify the audience, their likely context, and the one question the
+  explanation should answer.
+- Separate checked facts, supplied facts, assumptions, recommendations, and
+  unresolved uncertainty. Research material or time-sensitive claims with
+  available primary sources when research is needed, and record the source,
+  URL, and observation date.
+- Keep the scope to one topic and one useful takeaway. Do not invent evidence,
+  audience needs, outcomes, or decisions.
+- If the audience or topic is materially missing, make the smallest reasonable
+  assumption and label it; ask one concise question only when proceeding would
+  change the explanation materially.
 
-## Choose a bounded mode
+## Produce one artifact
 
-Use **small mode** for one local decision with a short dependency chain. Ask
-one frontier round with no more than three material questions. Resolve facts
-first and state a recommendation in the Spec.
+Return exactly one self-contained `.html` artifact. The artifact must work
+offline and contain all CSS and visuals inline. Do not use remote assets,
+scripts, fonts, embeds, network calls, tracking, or generated companion files.
 
-Use **complex mode** for a branched decision, several owners, or a meaningful
-reversibility/risk boundary. Build a dependency tree and work in frontier
-rounds: ask all currently answerable owner decisions together, then recompute
-the frontier after the answers. Use at most three rounds or ten material
-questions by default. If the cap is reached, return the partial Spec with
-unresolved decisions explicitly marked; do not continue interviewing forever.
+Include:
 
-If the owner does not answer, stop and report what is blocked. Do not infer an
-owner decision from silence.
+- `<!doctype html>`, `<html lang="...">`, a useful `<title>`, semantic
+  headings, `<main>`, and sections with readable focus states;
+- sufficient color contrast, visible labels, and meaningful `aria-*`
+  attributes for interactive or visual elements;
+- one large inline SVG or equivalent local visual with a title/description and
+  adjacent explanatory text. Use visible equivalents for information conveyed
+  by color, position, icons, or arrows;
+- few words per visual, a concise summary, and a clearly labelled text-only
+  fallback in the audience's language that remains useful when visuals do not
+  render; and
+- a sources/fact-check section in the audience's language listing checked
+  claims, URLs, observation dates, supplied facts, and unresolved uncertainty.
+  If no external research was needed, say so explicitly.
 
-## Resolve and record
-
-Use available context to identify the smallest missing decision affecting the
-outcome, audience, constraints, or expected proof. Preserve conflicting and
-unknown evidence. Ask a question only when its prerequisites are settled;
-group independent decisions and remove settled questions after each answer.
-
-Keep the Spec proportional to the decision. Include selected decisions,
-facts and citations, assumptions, non-goals, acceptance checks, relevant risks,
-dependencies, rollback or stop conditions, and unresolved decisions. Label it
-`decision-ready` only when all material owner decisions are answered;
-otherwise use `needs-owner-decision` and stop dependent work.
-
-## Optional visual explanation
-
-Create this mode only when the user asks for a visual explanation or names a
-specific audience that benefits from one. It is an output companion, not a
-requirement for ordinary clarification.
-
-Produce exactly one self-contained `.html` artifact with:
-
-- a language attribute, title, semantic headings, `main`, readable focus
-  states, sufficient contrast, and visible text alternatives;
-- large inline SVG/CSS or other local visuals with meaningful labels and
-  adjacent explanatory text; no remote assets, scripts, fonts, or network
-  dependencies;
-- few words per visual, a concise summary, and a clearly labelled text fallback
-  that remains useful if visuals do not render;
-- a sources/fact-check section listing checked claims, URLs, observation dates,
-  and unresolved uncertainty.
-
-Keep the artifact about the named audience and the clarified decision. Do not
-turn it into an implementation, dashboard, or multi-file website. If the
-visual artifact cannot be produced safely, return the text Spec and explain
-the limitation.
+Prefer one clear visual relationship—flow, comparison, timeline, hierarchy,
+or before/after—over decoration. Keep the explanation readable on a small
+screen and usable with keyboard navigation. At narrow widths, reflow or
+simplify the visual, shorten labels, or pair it with adjacent text so labels
+remain readable; do not squeeze a desktop diagram into a tiny viewport. Test a
+representative narrow rendering rather than relying on a fixed pixel rule.
+Respect reduced-motion preferences and do not add animation, transition, or
+other effects that distract from the explanation.
 
 ## Handoff
 
-Return the Spec, decision status, evidence/sources, and next action within the
-existing authority. For clarification-only work, state that implementation has
-not started. For a larger authorized task, the caller's lifecycle owns
-continued execution and any remaining gates.
+Return the artifact and a short note naming the audience, takeaway, sources,
+and any assumption or uncertainty. If the artifact cannot be produced safely,
+return a concise text explanation with the limitation; do not fabricate facts
+or create additional files. When the caller asks for an HTML explanation in a
+local workspace, that ordinary request authorizes the normal local artifact;
+use a path within the intended workspace, avoid overwriting unrelated files,
+and do not require separate approval of an exact filename. Publishing or other
+external actions remain separate authority.

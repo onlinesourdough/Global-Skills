@@ -7,9 +7,10 @@ This repository is the canonical source for approved, cross-project skills.
 - Keep the root `.codex-plugin/plugin.json` thin: it exposes the same
   `skills/` directory and owns no context, memory, lifecycle, domain, audit,
   or run-history data.
-- Treat `clarify`, `manage-skills`, and `shape-offer` as optional global
-  capabilities. Worker orchestration belongs to the AIOS plugin route
-  `aios-orchestrate-workers`; it is not a Global Skills payload. System,
+- Treat `clarify` and `shape-offer` as optional global capabilities. Skill
+  management belongs to the AIOS owner route or a native standalone workflow.
+  Worker orchestration belongs to the AIOS plugin route
+  `aios-orchestrate-workers`; neither is a Global Skills payload. System,
   Project, domain, lifecycle, and audit skills remain with their existing
   owners.
 - Use the deterministic checks in `scripts/` and `tests/` before handoff.

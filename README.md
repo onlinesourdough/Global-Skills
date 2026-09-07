@@ -4,52 +4,47 @@
 
 # Online Sourdough Skills
 
-Three small, reviewed methods for agent workflows, distributed from one
+Two small, reviewed methods for agent workflows, distributed from one
 harness-neutral source. The canonical payload is always
-`skills/<slug>/SKILL.md`; the root Codex plugin and other installers discover
-that same payload instead of maintaining copies.
+`skills/<slug>/SKILL.md`; the root Codex plugin, Pi package, and other
+installers discover that same payload instead of maintaining copies.
 
-The current release candidate is `0.2.1`. The existing `0.2.0` installation is
-legacy four-skill content; this candidate uses the distinct `v0.2.1` identity
-to avoid cache reuse. Its public install commands are valid only after the
-immutable `v0.2.1` tag is visible on GitHub. Build and Review evidence uses
-local commit/ref fixtures and does not claim that the tag already exists.
+The current release candidate is `0.3.0`. The existing `0.2.0` installation is
+legacy content; this candidate uses the distinct `v0.3.0` identity. Its public
+install commands are valid only after the immutable `v0.3.0` tag is visible on
+GitHub. Build and Review evidence uses local commit/ref fixtures and does not claim that the tag already exists.
 
 ## Included skills
 
 | Skill | Use it for | Returns |
 | --- | --- | --- |
-| [`clarify`](skills/clarify/SKILL.md) | Resolve material facts and owner decisions before implementation | A decision-ready or explicitly blocked Spec |
-| [`manage-skills`](skills/manage-skills/SKILL.md) | Review provenance, overlap, installation, updates, removal, and rollback | Verified, authorized capability state |
+| [`clarify`](skills/clarify/SKILL.md) | Explain one topic or decision for a named audience | One accessible, self-contained visual HTML artifact |
 | [`shape-offer`](skills/shape-offer/SKILL.md) | Shape a trust-based offer from customer, delivery, economics, evidence, and owner constraints | A concise Offer Brief and smallest validation |
 
-Worker orchestration is owned by the AIOS plugin route
-`aios-orchestrate-workers`, outside this Global Skills plugin. These three
-portable methods do not depend on that route.
-
-Clarification-only requests end at the Spec. When `clarify` supports an
-already-authorized build, the caller's lifecycle continues execution without
-a redundant implementation approval. Other scope and external-action gates
-still apply.
+Skill installation, update, removal, and rollback remain owner-authorized
+operations. The management workflow is owned by the AIOS owner route or a
+native standalone workflow; it is not an active Global Skills payload. Worker
+orchestration is owned by the AIOS plugin route `aios-orchestrate-workers`.
+Neither capability is required to discover or use these two portable skills.
 
 ## Source and scope
 
 This repository owns reusable cross-project methods only. It does not own a
 consumer's lifecycle, domain rules, credentials, context, memory, audit, or run
 history. The plugin adds no MCP server, app, hook, schedule, telemetry, or
-background service. Some skills can recommend commands or external actions,
-but their own authorization and stop boundaries still apply.
+background service.
 
-The root [plugin manifest](.codex-plugin/plugin.json) is intentionally thin:
-it points Codex at `./skills/`. Repository marketplace metadata lives in
+The root [plugin manifest](.codex-plugin/plugin.json) is intentionally thin: it
+points Codex at `./skills/`. The root [Pi package](package.json) points Pi at
+the same `./skills` directory. Repository marketplace metadata lives in
 [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). There
 are no Claude, Cursor, or other copied payload trees in this repository.
 
 ## Install a pinned release
 
-Review the tag and [release notes](CHANGELOG.md) before installing. Run project-local commands
-inside the project that should discover the skills; do not switch to global
-scope unless that wider scope is intentional.
+Review the tag and [release notes](CHANGELOG.md) before installing. Run
+project-local commands inside the project that should discover the skills; do
+not switch to global scope unless that wider scope is intentional.
 
 ### Codex plugin
 
@@ -57,7 +52,7 @@ With a Codex CLI that supports `codex plugin`, add the repository marketplace
 at the immutable release tag, inspect it, and install the plugin:
 
 ```sh
-codex plugin marketplace add onlinesourdough/Global-Skills --ref v0.2.1
+codex plugin marketplace add onlinesourdough/Global-Skills --ref v0.3.0
 codex plugin list --available --json
 codex plugin add onlinesourdough-skills@onlinesourdough-skills
 ```
@@ -72,14 +67,14 @@ The optional project-local adapter is pinned to `skills@1.5.23`. Discover the
 source without installing:
 
 ```sh
-npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.2.1 --list
+npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.3.0 --list
 ```
 
-Install all three skills for Claude Code and Cursor in the current project, then
+Install both skills for Claude Code and Cursor in the current project, then
 inspect discovery and the generated `skills-lock.json`:
 
 ```sh
-npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.2.1 --skill clarify manage-skills shape-offer --agent claude-code cursor -y
+npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.3.0 --skill clarify shape-offer --agent claude-code cursor -y
 npx skills@1.5.23 list --agent claude-code cursor
 ```
 
@@ -88,6 +83,37 @@ This adapter normally keeps one project copy under
 listing, lock/ref, and byte-hash evidence do not by themselves prove
 model-backed behavior in Claude Code or Cursor Agent.
 
+### Pi package
+
+The root `package.json` exposes the same canonical `./skills` directory to Pi.
+Pi's `-l` flag keeps package settings project-local in `.pi/settings.json`.
+Because `v0.3.0` is still an unreleased candidate, do not run the pinned
+install until that immutable tag exists and has passed Ship verification. In a
+disposable project after publication:
+
+```sh
+pi install git:github.com/onlinesourdough/Global-Skills@v0.3.0 -l
+pi list
+```
+
+`pi update --extensions` only reconciles installed packages to their existing
+pinned refs. To move this package to a later reviewed ref, install that exact
+ref with `-l`; to roll back, install the prior exact ref again:
+
+```sh
+pi install git:github.com/onlinesourdough/Global-Skills@<reviewed-ref> -l
+```
+
+To remove the current candidate from the same project, use its exact source:
+
+```sh
+pi remove git:github.com/onlinesourdough/Global-Skills@v0.3.0 -l
+```
+
+These commands are documented usage guidance only; no Pi installation or
+settings change was performed for this candidate. Omit `-l` only when a wider
+user scope is intentional.
+
 ## Update and rollback
 
 Treat an update as a new pinned-source review: inspect the release diff, record
@@ -95,13 +121,8 @@ the prior ref and hashes, install from the new immutable tag, and verify
 discovery plus representative behavior. Do not use a mutable branch as a
 release ref.
 
-Repository history retains one parentless clean-root baseline on
-`codex/issue-33-cross-harness-portability`. `main` advances from it only through
-ordinary reviewed single-parent commits, so normal non-force updates do not
-create another root or merge line.
-
-The verified `onlinesourdough/Global-Skills` repository is the current canonical
-endpoint and is observed public. The local `0.2.1` candidate remains
+The verified `onlinesourdough/Global-Skills` repository is the current
+canonical endpoint and is observed public. The local `0.3.0` candidate remains
 unreleased; new public release availability is held pending the recorded
 GitHub Support purge and private-state re-audit. The owner selected no
 historical `v0.1.0` continuity: its private tag and release are removed during
@@ -114,16 +135,16 @@ codex plugin remove onlinesourdough-skills@onlinesourdough-skills
 codex plugin marketplace remove onlinesourdough-skills
 ```
 
-For the Skills CLI project adapter, remove only this repository's three skill
+For the Skills CLI project adapter, remove only this repository's two skill
 names:
 
 ```sh
-npx skills@1.5.23 remove --skill clarify manage-skills shape-offer --agent claude-code cursor -y
+npx skills@1.5.23 remove --skill clarify shape-offer --agent claude-code cursor -y
 npx skills@1.5.23 list --agent claude-code cursor
 ```
 
 After publication, reinstall only a public rollback ref whose sanitized bytes,
-inventory, and unchanged canonical endpoint have passed post-action proof. No
+inventory, and unchanged canonical endpoint have passed post-Ship proof. No
 public install or rollback command may point to `v0.1.0`. The consumer project
 remains usable without these skills, and rollback never creates another
 canonical payload or repository.
@@ -132,17 +153,17 @@ canonical payload or repository.
 
 [Online Sourdough Skills Atlas](https://github.com/onlinesourdough/Skills-Atlas)
 is a separate map and library interface; GitHub remains the canonical source.
-After an authorized release and its required verification pass,
-the public static Atlas is intended to default to bounded anonymous GitHub API
-reads from `onlinesourdough/Global-Skills`, display its observed revision and access
-state, and remain read-only. This exact existing repository stays canonical; it
-is not renamed, archived, replaced, or duplicated for publication.
+After an authorized release and its required verification pass, the public
+static Atlas is intended to default to bounded anonymous GitHub API reads from
+`onlinesourdough/Global-Skills`, display its observed revision and access state,
+and remain read-only. This exact existing repository stays canonical; it is
+not renamed, archived, replaced, or duplicated for publication.
 
 An optional authenticated, self-hosted Atlas may propose exactly one validated
 skill edit on a new branch and open a pull request. It never writes the default
 branch. The repository is currently observed public, but this Build candidate
 does not claim that the live Atlas integration works or that an unreleased
-`v0.2.1` release is publicly available; both require post-Ship verification.
+`v0.3.0` release is publicly available; both require post-Ship verification.
 
 ## Validate a checkout
 

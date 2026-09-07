@@ -29,6 +29,54 @@ Current source checks for this cleanup are recorded separately below; the
 model-backed forward check is limited to the disposable clarify fixtures, and
 no publication, native installation, or runtime acceptance is claimed.
 
+## 2026-09-07 two-skill migration evidence
+
+This new source-only migration retains `clarify` and `shape-offer`. Skill
+management belongs to the AIOS owner route or a native standalone workflow;
+worker orchestration belongs to `aios-orchestrate-workers`. The active global
+inventory contains no management payload and does not require AIOS for
+standalone discovery or use.
+
+Current release-prep addendum for this migration: the next candidate is
+`0.3.0`; `v0.3.0` remains an absent planned tag. The local `0.3.0` candidate remains unreleased and no public
+`v0.3.0` availability is claimed. The installed `0.2.0` content is treated as
+legacy content for this migration; no cache identity reuse or native adoption
+is inferred.
+
+The migrated Clarify contract is an ordinary discoverable visual explainer. It
+returns exactly one offline HTML artifact for a named audience, with inline
+visuals, visible equivalents, an audience-language text-only fallback, and an
+audience-language sources/fact-check section. At narrow widths, visuals must
+reflow or simplify so labels remain readable. The fixture and forward proof
+reject remote assets, scripts, external stylesheet tags, and distracting
+animation. The root `package.json` is a thin Pi declaration pointing at the
+same canonical `./skills` directory.
+
+The isolated clarify visual forward check is limited to one realistic request;
+it checks raw discovery evidence and retains the generated artifact in a
+temporary review path. This is model-behavior evidence only for that disposable
+run, not native runtime acceptance.
+
+The new source checks are:
+
+- `python3 scripts/validate_repo.py` — PASS; two-skill structure, 0.3.0
+  candidate metadata, Pi declaration, marketplace source/ref, history,
+  documentation, and ownership boundaries validated.
+- `python3 scripts/secret_scan.py` — PASS; 29 worktree files and 112 unique
+  reachable history blobs scanned, zero signature matches (values never
+  printed).
+- `python3 tests/run_all.py` — PASS; the isolated clarify visual forward check
+  passed and the complete discovered suite ran 36 tests with 36 passing. Native
+  loader/parser boundary checks passed where available; no runtime acceptance
+  is claimed.
+
+Available Clarify history before this migration combined a bounded Spec and
+decision workflow with an optional visual explanation. That historical Spec
+mix predates this migration and is not part of the active 0.3.0 behavior. The
+pinned Anthropic `eli5` source remains recorded below as the inspiration for
+audience-sized visual explanations; its Apache-2.0 source and pinned revision
+are provenance only, not a copied payload.
+
 ## Boundary and methods
 
 The r2 candidate was built from the then-current private `origin/main`, passed
@@ -138,7 +186,7 @@ defaults to bounded anonymous GitHub API reads from
 state, and remains read-only. An optional authenticated self-hosted mode may
 propose exactly one validated skill edit on a new branch and open a pull
 request; it never writes the default branch. This candidate does not claim that
-the live Atlas integration works or that an unreleased `v0.2.1` release is
+the live Atlas integration works or that an unreleased `v0.3.0` release is
 publicly available.
 
 ## Authorized in-place sanitization and publication gate
@@ -197,6 +245,9 @@ After a later explicitly authorized Ship, public proof must:
 
 ## Current source checks and limitations
 
+The following 2026-09-05 checks are historical evidence from the prior
+candidate and are not re-attested by the 0.3.0 migration.
+
 For this ownership cleanup, these checks were run:
 
 - `git ls-remote --symref https://github.com/onlinesourdough/Global-Skills.git
@@ -233,5 +284,5 @@ The private recovery set can restore exact pre-action refs and metadata only
 under a separately authorized rollback. The repository is currently observed
 public, but release/public availability remains held until the recorded Support
 purge and private-state re-audit succeed. Consumer recovery is to remove only
-this plugin or its three named Global Skills. No public rollback release exists
+this plugin or its two named Global Skills. No public rollback release exists
 before `v0.2.0`; `v0.1.0` must not be used or recreated.

@@ -1,7 +1,7 @@
 {
   "name": "onlinesourdough-skills",
-  "version": "0.2.1",
-  "description": "Three portable, reviewed skills for clarification, skill management, and offer shaping.",
+  "version": "0.3.0",
+  "description": "Two portable, reviewed skills for visual explanation and offer shaping.",
   "author": {
     "name": "onlinesourdough",
     "url": "https://github.com/onlinesourdough"
@@ -15,10 +15,10 @@
     "composerIcon": "./assets/branding/skills-icon.png",
     "logo": "./assets/branding/skills-icon.png",
     "shortDescription": "Reviewed global skills from one portable source.",
-    "longDescription": "Clarify decisions, manage skill provenance and rollback, and shape trust-based offers.",
+    "longDescription": "Explain topics for named audiences and shape trust-based offers.",
     "developerName": "onlinesourdough",
     "category": "Productivity",
-    "capabilities": ["Clarification", "Skill management", "Offer shaping"],
+    "capabilities": ["Visual explanation", "Offer shaping"],
     "defaultPrompt": ["Use the relevant global skill for this task."]
   }
 }

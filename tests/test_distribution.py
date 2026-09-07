@@ -10,9 +10,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = ("clarify", "manage-skills", "shape-offer")
-RELEASE_VERSION = "0.2.1"
-UPGRADED_VERSION = "0.2.2"
+SKILLS = ("clarify", "shape-offer")
+RELEASE_VERSION = "0.3.0"
+UPGRADED_VERSION = "0.3.1"
 CODEX = shutil.which("codex")
 CLAUDE = shutil.which("claude")
 CURSOR = shutil.which("cursor")
@@ -63,6 +63,13 @@ class DistributionFixtureTests(unittest.TestCase):
                     self.assertEqual(digest(destination_root / slug / "SKILL.md"), digest(ROOT / "skills" / slug / "SKILL.md"))
                     self.assertTrue((destination_root / slug).is_symlink())
             self.assertTrue(all(path.is_relative_to(fixture) for path in fixture.rglob("*") if path.is_symlink() or path.is_file()))
+
+    def test_pi_package_points_at_the_same_canonical_payload(self) -> None:
+        package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
+        self.assertTrue(package["private"])
+        self.assertEqual(package["keywords"], ["pi-package"])
+        self.assertEqual(package["pi"], {"skills": ["./skills"]})
+        self.assertEqual(package["files"], ["skills", "README.md", "LICENSE"])
 
     def test_verified_project_adapter_topology_shares_one_project_copy(self) -> None:
         with tempfile.TemporaryDirectory(prefix="skills-adapter-proof-") as temporary:
@@ -191,7 +198,7 @@ class DistributionFixtureTests(unittest.TestCase):
 
             safe_run = run([
                 CLAUDE, "--bare", "--print", "--no-session-persistence", "--tools", "", "--setting-sources", "local", "--output-format", "json",
-                "Use /clarify for a small decision; return a decision-ready Spec and do not implement.",
+                "Use /clarify to explain a small deployment decision in one visual HTML artifact; do not publish or modify the project.",
             ], cwd=fixture, env={"PATH": "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"})
             # A logged-out host is a real loader boundary, not a successful
             # inference proof. The command must still terminate without tools

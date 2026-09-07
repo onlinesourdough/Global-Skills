@@ -1,17 +1,21 @@
 # Changelog
 
-## 0.2.1 release candidate
+## 0.3.0 release candidate
 
-This dated preparation targets the verified `onlinesourdough/Global-Skills`
-repository. It keeps exactly the three existing Global Skills and uses a new
-`v0.2.1` version/cache identity because the installed `0.2.0` content is the
-superseded four-skill set. Worker orchestration remains solely in the AIOS
-plugin route `aios-orchestrate-workers`.
+This preparation targets the verified `onlinesourdough/Global-Skills`
+repository and keeps exactly two portable Global Skills: `clarify` and
+`shape-offer`. The management workflow remains with the AIOS owner route or a
+native standalone workflow, while worker orchestration remains solely in the
+AIOS plugin route `aios-orchestrate-workers`.
 
-- Update current Codex, marketplace, Skills CLI, README, support, release, and
-  validation contracts to the Global-Skills endpoint and `v0.2.1`.
+- Convert `clarify` from a decision-gate workflow into an ordinary visual
+  topic-explainer that returns one accessible, self-contained HTML artifact.
+- Add a thin Pi package declaration pointing at the same canonical `skills/`
+  source and update Codex, marketplace, Skills CLI, README, release, and
+  validation contracts to `v0.3.0`.
+- Preserve `shape-offer` and the reviewed branding bytes unchanged.
 - Preserve the prior historical sanitization protections, withheld `v0.1.0`,
-  private visibility boundaries, and three payload bytes.
+  and private visibility boundaries.
 - Keep publication, tag creation, native adoption, and runtime acceptance
   pending independent lead Review and later exact Ship authority.
 
