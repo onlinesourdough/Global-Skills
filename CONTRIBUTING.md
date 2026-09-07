@@ -25,7 +25,9 @@ python3 scripts/secret_scan.py
 python3 tests/run_all.py
 ```
 
-Describe the problem, changed behavior, source/license provenance, tests, and
-remaining limitations. By contributing, you agree that your contribution is
-provided under this repository's MIT License and that you have the right to
-submit it.
+For an optional model-backed Clarify spot-check, run
+`python3 tests/forward_clarify.py` separately in an isolated environment; it is
+not part of the default suite. Describe the problem, changed behavior,
+source/license provenance, tests, and remaining limitations. By contributing,
+you agree that your contribution is provided under this repository's MIT
+License and that you have the right to submit it.

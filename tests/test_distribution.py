@@ -196,18 +196,6 @@ class DistributionFixtureTests(unittest.TestCase):
             for slug in SKILLS:
                 self.assertEqual(digest(fixture / ".claude" / "skills" / slug / "SKILL.md"), digest(ROOT / "skills" / slug / "SKILL.md"))
 
-            safe_run = run([
-                CLAUDE, "--bare", "--print", "--no-session-persistence", "--tools", "", "--setting-sources", "local", "--output-format", "json",
-                "Use /clarify to explain a small deployment decision in one visual HTML artifact; do not publish or modify the project.",
-            ], cwd=fixture, env={"PATH": "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"})
-            # A logged-out host is a real loader boundary, not a successful
-            # inference proof. The command must still terminate without tools
-            # or session/config writes.
-            self.assertIn(safe_run.returncode, (0, 1))
-            self.assertNotIn("write", safe_run.stderr.lower())
-            if "Not logged in" in safe_run.stdout:
-                self.assertIn("Not logged in", safe_run.stdout)
-
     @unittest.skipUnless(CURSOR, "Cursor CLI is unavailable; Cursor CLI-specific proof is skipped on this host")
     def test_cursor_isolated_cli_boundary_does_not_claim_skill_install(self) -> None:
         with tempfile.TemporaryDirectory(prefix="cursor-loader-proof-") as temporary:

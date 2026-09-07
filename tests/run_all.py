@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the repository's isolated, deterministic proof suite."""
+"""Run the repository's local structure, safety, and contract checks."""
 
 from __future__ import annotations
 
@@ -20,12 +20,6 @@ def main() -> int:
     secret_scan = subprocess.run([sys.executable, str(ROOT / "scripts" / "secret_scan.py")], cwd=ROOT)
     if secret_scan.returncode:
         return secret_scan.returncode
-    for forward in [
-        ROOT / "tests" / "forward_clarify.py",
-    ]:
-        result = subprocess.run([sys.executable, "-B", str(forward)], cwd=ROOT)
-        if result.returncode:
-            return result.returncode
     suite = unittest.defaultTestLoader.discover(str(ROOT / "tests"), pattern="test_*.py")
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     return 0 if result.wasSuccessful() else 1

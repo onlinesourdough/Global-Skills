@@ -14,12 +14,12 @@
   "source_boundary": {
     "reviewed_candidate": "issue #9 lead-reviewed Global Skills tree; accepted ownership cleanup retains two portable Global Skills, moves skill management to the AIOS owner or native standalone route, and keeps worker orchestration in the AIOS plugin route aios-orchestrate-workers; current 0.3.0 preparation targets verified onlinesourdough/Global-Skills",
     "history_strategy": "one publish-safe parentless clean-root baseline followed by ordinary reviewed linear commits on main",
-    "candidate_state": "local unreleased release-preparation candidate; no public tag or release; native adoption evidence is tracked separately"
+    "candidate_state": "unreleased source candidate; source-only synchronization to the verified canonical main is allowed after review; no public tag or release; native adoption evidence is tracked separately"
   },
   "atlas": {
     "canonical_repository": "https://github.com/onlinesourdough/Global-Skills",
     "endpoint_continuity": "The verified onlinesourdough/Global-Skills repository is the current canonical endpoint; publication does not rename, archive, replace, or duplicate it.",
-    "candidate_boundary": "The repository is currently public as observed; the local 0.3.0 candidate remains unreleased and new public release availability is held pending the recorded GitHub Support purge and private-state re-audit; Build does not claim that the live Atlas integration works.",
+    "candidate_boundary": "The repository is currently public as observed; the 0.3.0 source candidate remains unreleased; source-only synchronization to the verified canonical main does not create public release availability, which remains held pending the recorded GitHub Support purge and private-state re-audit; Build does not claim that the live Atlas integration works.",
     "public_static_mode": {
       "source": "bounded anonymous GitHub API reads",
       "default_repository": "onlinesourdough/Global-Skills",
@@ -40,7 +40,7 @@
     "github_managed_residue": "refs/pull/2/head and refs/pull/3/head plus unreachable old objects and cached diffs/views remain blocked pending GitHub Support purge confirmation",
     "canonical_endpoint_action": "Historical r3 requirement: keep the existing onlinesourdough/Skills repository private and in place; do not rename, archive, replace, duplicate, or move it.",
     "support_gate": "Historical support gate: no visibility change, v0.2.0 tag, or GitHub release was legal until GitHub Support confirmed purge and the private-state re-audit passed; the purge proof remains required before new public release availability.",
-    "decision_record": "docs/source-audit.md#authorized-in-place-sanitization-and-publication-gate"
+    "decision_record": "docs/source-audit.md#historical-release-and-ship-gate"
   },
   "marketplace": {
     "path": ".agents/plugins/marketplace.json",
@@ -57,7 +57,7 @@
     "source_ref_kind": "planned-immutable-tag",
     "release_tag": "v0.3.0",
     "tag_exists_at_build": false,
-    "ship_requirement": "After lead Review accepts this candidate, GitHub Support confirms purge, and the private re-audit passes, create v0.3.0 from the reviewed candidate at the verified onlinesourdough/Global-Skills endpoint and verify it before presenting installation as available.",
+    "ship_requirement": "After lead Review accepts this candidate, source-only synchronization may update the verified canonical main; GitHub Support confirms purge and the private re-audit passes before v0.3.0 may be created or public release availability presented at the verified onlinesourdough/Global-Skills endpoint.",
     "install_scope": "explicit project or isolated fixture unless the user intentionally selects a wider scope",
     "recovery": "remove this plugin or its exact project-local skills; no rollback tag is created during preparation and v0.1.0 must not be recreated"
   },
@@ -89,7 +89,7 @@
     "recreate": false,
     "first_public_release": "v0.2.0"
   },
-  "release_notes": "CHANGELOG.md#021-release-candidate",
+  "release_notes": "CHANGELOG.md#030-release-candidate",
   "build_evidence": {
     "required_checks": [
       "python3 scripts/validate_repo.py",

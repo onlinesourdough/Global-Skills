@@ -9,10 +9,13 @@ harness-neutral source. The canonical payload is always
 `skills/<slug>/SKILL.md`; the root Codex plugin, Pi package, and other
 installers discover that same payload instead of maintaining copies.
 
-The current release candidate is `0.3.0`. The existing `0.2.0` installation is
-legacy content; this candidate uses the distinct `v0.3.0` identity. Its public
-install commands are valid only after the immutable `v0.3.0` tag is visible on
-GitHub. Build and Review evidence uses local commit/ref fixtures and does not claim that the tag already exists.
+The current source candidate is `0.3.0`. Any existing `0.2.0` installation is
+legacy content; this candidate uses the distinct `v0.3.0` identity. After lead
+Review, its reviewed source may be synchronized to the verified canonical
+`main`; that source-only synchronization does not create a public release. Its
+public install commands are valid only after the immutable `v0.3.0` tag is
+visible on GitHub. Build and Review evidence uses local commit/ref fixtures and
+does not claim that the tag already exists.
 
 ## Included skills
 
@@ -110,9 +113,9 @@ To remove the current candidate from the same project, use its exact source:
 pi remove git:github.com/onlinesourdough/Global-Skills@v0.3.0 -l
 ```
 
-These commands are documented usage guidance only; no Pi installation or
-settings change was performed for this candidate. Omit `-l` only when a wider
-user scope is intentional.
+These commands are documented usage guidance; this source cleanup does not
+install Pi or change project settings. Omit `-l` only when a wider user scope is
+intentional.
 
 ## Update and rollback
 
@@ -122,9 +125,10 @@ discovery plus representative behavior. Do not use a mutable branch as a
 release ref.
 
 The verified `onlinesourdough/Global-Skills` repository is the current
-canonical endpoint and is observed public. The local `0.3.0` candidate remains
-unreleased; new public release availability is held pending the recorded
-GitHub Support purge and private-state re-audit. The owner selected no
+canonical endpoint and is observed public. The `0.3.0` source candidate remains
+unreleased; source-only synchronization to canonical `main` does not create
+public release availability, which remains held pending the recorded GitHub
+Support purge and private-state re-audit. The owner selected no
 historical `v0.1.0` continuity: its private tag and release are removed during
 the r3 sanitization and must not be recreated. Until the release gate is
 satisfied, the safe recovery is to remove this plugin and its marketplace
@@ -176,9 +180,10 @@ python3 scripts/secret_scan.py
 python3 tests/run_all.py
 ```
 
-The full suite includes an isolated Codex forward check and can take several
-minutes. Candidate/public-source distinctions, provenance, history findings,
-and post-Ship verification are recorded in
+The default suite is local and does not require a model-backed forward run.
+For an optional behavior spot-check, run `python3 tests/forward_clarify.py` in
+an isolated environment. Candidate/public-source distinctions, provenance,
+history findings, and post-Ship verification are recorded in
 [`docs/source-audit.md`](docs/source-audit.md) and [`release.json`](release.json).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) before proposing a change,
