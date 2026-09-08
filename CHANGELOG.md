@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.3.1 release candidate
+
+This local candidate prepares the verified `onlinesourdough/Global-Skills`
+source under the `v0.3.1` identity. Public tag, release, and availability
+remain blocked by the existing Support purge/re-audit Ship gate. Explicitly
+authorized reviewed local adoption is tracked separately and does not create
+public release authority or runtime acceptance.
+
+- The prior guardrails slug was an uninstalled draft; this local rename makes
+  `setup-guardrails` canonical without an alias or duplicate payload.
+- Correct the guardrails skill's displayed heading and prose formatting.
+- Align current manifests, marketplace metadata, install guidance, release
+  metadata, and validation contracts to `v0.3.1`.
+- Preserve the historical release identities, canonical endpoint, and
+  `PRIVATE_SUPPORT_PURGE_PENDING` publication gate.
+
 ## 0.3.0 release candidate
 
 This preparation targets the verified `onlinesourdough/Global-Skills`

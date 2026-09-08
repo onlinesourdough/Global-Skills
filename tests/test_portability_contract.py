@@ -9,8 +9,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = {"clarify", "shape-offer"}
-RELEASE_TAG = "v0.3.0"
+SKILLS = {"clarify", "setup-guardrails", "shape-offer"}
+RELEASE_TAG = "v0.3.1"
 RETIRED = "route-models"
 VALIDATOR_SPEC = importlib.util.spec_from_file_location("validate_repo_lineage", ROOT / "scripts" / "validate_repo.py")
 assert VALIDATOR_SPEC and VALIDATOR_SPEC.loader
@@ -27,19 +27,19 @@ class PortabilityContractTests(unittest.TestCase):
         cls.marketplace = json.loads((ROOT / ".agents/plugins/marketplace.json").read_text(encoding="utf-8"))
 
     def test_candidate_metadata_and_distribution_refs_are_consistent(self) -> None:
-        self.assertEqual(self.release["version"], "0.3.0")
+        self.assertEqual(self.release["version"], "0.3.1")
         self.assertEqual(self.release["status"], "candidate")
         self.assertFalse(self.release["released"])
         self.assertIsNone(self.release["release_date"])
         self.assertEqual(set(self.release["included_skills"]), SKILLS)
         self.assertEqual(self.manifest["version"], self.release["version"])
-        self.assertEqual(set(self.manifest["interface"]["capabilities"]), {"Visual explanation", "Offer shaping"})
+        self.assertEqual(set(self.manifest["interface"]["capabilities"]), {"Visual explanation", "Offer shaping", "Local safety guardrails"})
         entry = self.marketplace["plugins"][0]
         self.assertEqual(entry["source"]["url"], "https://github.com/onlinesourdough/Global-Skills")
         self.assertEqual(entry["source"]["ref"], RELEASE_TAG)
         self.assertEqual(entry["policy"], {"installation": "AVAILABLE", "authentication": "ON_INSTALL"})
         self.assertFalse(self.release["marketplace"]["tag_exists_at_build"])
-        self.assertEqual(self.release["release_notes"], "CHANGELOG.md#030-release-candidate")
+        self.assertEqual(self.release["release_notes"], "CHANGELOG.md#031-release-candidate")
 
     def test_release_and_source_sync_boundaries_are_explicit(self) -> None:
         boundary = self.release["atlas"]["candidate_boundary"]

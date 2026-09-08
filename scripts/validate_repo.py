@@ -12,10 +12,10 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_SKILLS = {"clarify", "shape-offer"}
+EXPECTED_SKILLS = {"clarify", "setup-guardrails", "shape-offer"}
 RETIRED_SKILL = "route-models"
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-RELEASE_VERSION = "0.3.0"
+RELEASE_VERSION = "0.3.1"
 RELEASE_TAG = f"v{RELEASE_VERSION}"
 PREVIOUS_TAG = "v0.1.0"
 BASELINE_REF = "refs/heads/codex/issue-33-cross-harness-portability"
@@ -37,7 +37,7 @@ CODEX_MARKETPLACE_ADD = f"codex plugin marketplace add onlinesourdough/Global-Sk
 CODEX_LIST = "codex plugin list --available --json"
 CODEX_INSTALL = "codex plugin add onlinesourdough-skills@onlinesourdough-skills"
 SKILLS_DISCOVER = f"npx {OFFICIAL_CLI_PACKAGE} add onlinesourdough/Global-Skills#{RELEASE_TAG} --list"
-SKILLS_INSTALL = f"npx {OFFICIAL_CLI_PACKAGE} add onlinesourdough/Global-Skills#{RELEASE_TAG} --skill clarify shape-offer --agent claude-code cursor -y"
+SKILLS_INSTALL = f"npx {OFFICIAL_CLI_PACKAGE} add onlinesourdough/Global-Skills#{RELEASE_TAG} --skill clarify setup-guardrails shape-offer --agent claude-code cursor -y"
 SKILLS_LIST = f"npx {OFFICIAL_CLI_PACKAGE} list --agent claude-code cursor"
 
 
@@ -153,7 +153,7 @@ def validate_json_files(errors: list[str]) -> None:
     if manifest.get("name") != "onlinesourdough-skills" or manifest.get("version") != RELEASE_VERSION or manifest.get("skills") != "./skills/" or manifest.get("license") != "MIT" or manifest.get("repository") != CANONICAL_REPOSITORY:
         fail(errors, "plugin.json: name/version/skills/license mismatch")
     interface = manifest.get("interface", {})
-    if set(interface.get("capabilities", [])) != {"Visual explanation", "Offer shaping"}:
+    if set(interface.get("capabilities", [])) != {"Visual explanation", "Offer shaping", "Local safety guardrails"}:
         fail(errors, "plugin.json: capability inventory mismatch")
     if any(key in manifest for key in ("apps", "hooks", "mcpServers", "mcp", "schedules")):
         fail(errors, "plugin.json: unsupported runtime surface added")
@@ -184,8 +184,8 @@ def validate_json_files(errors: list[str]) -> None:
     history = release.get("history_visibility", {})
     if history.get("status") != "PRIVATE_SUPPORT_PURGE_PENDING" or history.get("visibility_change_legal") is not False:
         fail(errors, "release.json: unresolved history gate must remain explicit")
-    if release.get("release_notes") != "CHANGELOG.md#030-release-candidate":
-        fail(errors, "release.json: release notes must target 0.3.0")
+    if release.get("release_notes") != "CHANGELOG.md#031-release-candidate":
+        fail(errors, "release.json: release notes must target 0.3.1")
 
     planned = release.get("marketplace", {})
     if planned.get("source") != {"source": "url", "url": CANONICAL_REPOSITORY, "ref": RELEASE_TAG} or planned.get("tag_exists_at_build") is not False:
@@ -303,7 +303,7 @@ def main() -> int:
         for error in errors:
             print(f"FAIL {error}")
         return 1
-    print("PASS source structure, two-skill inventory, metadata, safety boundaries, and Git lineage")
+    print("PASS source structure, three-skill inventory, metadata, safety boundaries, and Git lineage")
     return 0
 
 

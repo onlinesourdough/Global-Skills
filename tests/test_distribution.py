@@ -10,9 +10,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = ("clarify", "shape-offer")
-RELEASE_VERSION = "0.3.0"
-UPGRADED_VERSION = "0.3.1"
+SKILLS = ("clarify", "setup-guardrails", "shape-offer")
+RELEASE_VERSION = "0.3.1"
+UPGRADED_VERSION = "0.3.2"
 CODEX = shutil.which("codex")
 CLAUDE = shutil.which("claude")
 CURSOR = shutil.which("cursor")

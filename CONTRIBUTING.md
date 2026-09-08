@@ -11,11 +11,12 @@ configuration, generated caches, or consumer lifecycle/context/history data.
 Changes should preserve explicit authority, stop, proof, and rollback
 boundaries.
 
-The current Global Skills inventory is `clarify` and `shape-offer`. Skill
+The current Global Skills inventory is `clarify`, `shape-offer`, and
+`setup-guardrails`. Skill
 management is owned by the AIOS owner route or a native standalone workflow.
 Worker orchestration is owned by the AIOS plugin route
 `aios-orchestrate-workers`; do not add management or orchestration payloads
-here or make these two portable methods depend on those routes.
+here or make these portable methods depend on those routes.
 
 Before opening a pull request, run:
 

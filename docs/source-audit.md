@@ -1,14 +1,14 @@
 # Public release source and safety audit
 
-This record describes the current `0.3.0` source candidate. It is evidence for
+This record describes the current `0.3.1` source candidate. It is evidence for
 source review, not proof that a public release, native installation, or runtime
 integration is available.
 
 ## Current source boundary
 
-The repository contains exactly two portable skills: `clarify` and
-`shape-offer`. Each canonical payload lives at
-`skills/<slug>/SKILL.md`; the Codex manifest, Pi package, and project adapters
+The repository contains three portable skills: `clarify`, `shape-offer`, and
+`setup-guardrails`. Each canonical payload lives at `skills/<slug>/SKILL.md`;
+the Codex manifest, Pi package, and project adapters
 must discover those same files. Skill management belongs to the AIOS owner
 route or a native standalone workflow. Worker orchestration belongs to the
 AIOS plugin route `aios-orchestrate-workers`.
@@ -16,7 +16,7 @@ AIOS plugin route `aios-orchestrate-workers`.
 The candidate is an unreleased source candidate. After lead Review, the
 reviewed source may be synchronized to the verified canonical `main`; that
 source-only synchronization does not create public release availability. The
-`v0.3.0` tag, GitHub release, public install, native adoption, and runtime
+`v0.3.1` tag, GitHub release, public install, native adoption, and runtime
 acceptance remain separate Ship actions.
 
 The verified canonical endpoint is
@@ -69,13 +69,14 @@ review aids, not default test gates or runtime acceptance evidence.
 The default checks cover structure, frontmatter, manifests, marketplace and
 Pi routes, links, privacy boundaries, candidate state, Git lineage, and
 isolated loader topology. The retained fixtures and optional forward script
-are the behavior-review path for the two skills.
+are the behavior-review path for the portable skills; the Guardrails tests are
+isolated source/installer evidence, not native-hook acceptance evidence.
 
 ## Historical release and Ship gate
 
 Historical `v0.1.0` continuity is withheld: its tag and release must not be
 recreated. The old four-skill and three-skill release-preparation records are
-historical context only; they do not change the current two-skill inventory.
+historical context only; they do not change the current three-skill inventory.
 
 The current history visibility status remains
 `PRIVATE_SUPPORT_PURGE_PENDING`. GitHub-managed pull refs, cached diffs/views,
@@ -84,7 +85,7 @@ sanitization remain unresolved in this record. The repository is observed
 public, but that observation does not waive the gate. Publication remains
 **BLOCKED** until the Support purge and re-audit requirements below pass.
 
-Before a public `v0.3.0` release or public availability claim, a later exact
+Before a public `v0.3.1` release or public availability claim, a later exact
 Ship authority must require all of the following:
 
 1. GitHub Support confirms purge of the recorded managed refs, cached views,
@@ -92,10 +93,10 @@ Ship authority must require all of the following:
 2. A new private-state re-audit finds zero blocked content across ordinary and
    managed refs, objects, issues, releases, and caches.
 3. The reviewed source is synchronized to the unchanged canonical endpoint,
-   then an immutable `v0.3.0` tag and release are created and read back.
+   then an immutable `v0.3.1` tag and release are created and read back.
 4. Anonymous Git/HTTP/API, Codex, Skills CLI, Atlas, and any selected native
    runtime checks pass before installation is presented as available.
 
 Until then, recovery from public release refs is limited to removing this plugin
-or the two project-local skill names. No public rollback release is created
+or the three project-local skill names. No public rollback release is created
 during source preparation.
