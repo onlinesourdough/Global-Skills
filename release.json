@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "name": "onlinesourdough-skills",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "status": "candidate",
   "release_date": null,
   "released": false,
@@ -13,14 +13,14 @@
     "shape-offer"
   ],
   "source_boundary": {
-    "reviewed_candidate": "issue #9 lead-reviewed Global Skills tree; accepted ownership cleanup retains portable Global Skills, moves skill management to the AIOS owner or native standalone route, and keeps worker orchestration in the AIOS plugin route aios-orchestrate-workers; current 0.3.1 preparation targets verified onlinesourdough/Global-Skills",
+    "reviewed_candidate": "Astra instruction cleanup adds independent skill version metadata; ownership and historical sanitization boundaries remain intact",
     "history_strategy": "one publish-safe parentless clean-root baseline followed by ordinary reviewed linear commits on main",
     "candidate_state": "unreleased source candidate; source-only synchronization to the verified canonical main is allowed after review; no public tag or release; native adoption evidence is tracked separately"
   },
   "atlas": {
     "canonical_repository": "https://github.com/onlinesourdough/Global-Skills",
     "endpoint_continuity": "The verified onlinesourdough/Global-Skills repository is the current canonical endpoint; publication does not rename, archive, replace, or duplicate it.",
-    "candidate_boundary": "The repository is currently public as observed; the 0.3.1 source candidate remains unreleased; source-only synchronization to the verified canonical main does not create public release availability, which remains held pending the recorded GitHub Support purge and private-state re-audit; Build does not claim that the live Atlas integration works.",
+    "candidate_boundary": "The repository is currently public as observed; the 0.4.0 source candidate remains unreleased; source-only synchronization to the verified canonical main does not create public release availability, which remains held pending the recorded GitHub Support purge and private-state re-audit; Build does not claim that the live Atlas integration works.",
     "public_static_mode": {
       "source": "bounded anonymous GitHub API reads",
       "default_repository": "onlinesourdough/Global-Skills",
@@ -48,7 +48,7 @@
     "source": {
       "source": "url",
       "url": "https://github.com/onlinesourdough/Global-Skills",
-      "ref": "v0.3.1"
+      "ref": "v0.4.0"
     },
     "policy": {
       "installation": "AVAILABLE",
@@ -56,18 +56,18 @@
     },
     "category": "Productivity",
     "source_ref_kind": "planned-immutable-tag",
-    "release_tag": "v0.3.1",
+    "release_tag": "v0.4.0",
     "tag_exists_at_build": false,
-    "ship_requirement": "After lead Review accepts this candidate, source-only synchronization may update the verified canonical main; GitHub Support confirms purge and the private re-audit passes before v0.3.1 may be created or public release availability presented at the verified onlinesourdough/Global-Skills endpoint.",
+    "ship_requirement": "After lead Review accepts this candidate, source-only synchronization may update the verified canonical main; GitHub Support confirms purge and the private re-audit passes before v0.4.0 may be created or public release availability presented at the verified onlinesourdough/Global-Skills endpoint.",
     "install_scope": "explicit project or isolated fixture unless the user intentionally selects a wider scope",
     "recovery": "remove this plugin or its exact project-local skills; no rollback tag is created during preparation and v0.1.0 must not be recreated"
   },
   "distribution": {
     "codex": {
-      "marketplace_add": "codex plugin marketplace add onlinesourdough/Global-Skills --ref v0.3.1",
+      "marketplace_add": "codex plugin marketplace add onlinesourdough/Global-Skills --ref v0.4.0",
       "list": "codex plugin list --available --json",
       "install": "codex plugin add onlinesourdough-skills@onlinesourdough-skills",
-      "candidate_proof": "isolated local Git commit/ref fixture only; no v0.3.1 tag or public installation is claimed during preparation"
+      "candidate_proof": "isolated local Git commit/ref fixture only; no v0.4.0 tag or public installation is claimed during preparation"
     },
     "skills_cli": {
       "package": "skills@1.5.23",
@@ -75,8 +75,8 @@
       "source_commit": "435076e78988e1e6ec40d00b0b1d76bdbbc5419a",
       "license": "MIT",
       "npm_integrity": "sha512-+hMNBSi35yfX0sKD+ZcRm9y5or7u313OdkcvrRvJAsAzGCaA8wRTu2OmVdN0KRbk9ybqKby5dijkn6OVvNTUmw==",
-      "discover": "npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.3.1 --list",
-      "install": "npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.3.1 --skill clarify setup-guardrails shape-offer --agent claude-code cursor -y",
+      "discover": "npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.4.0 --list",
+      "install": "npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.4.0 --skill clarify setup-guardrails shape-offer --agent claude-code cursor -y",
       "list": "npx skills@1.5.23 list --agent claude-code cursor",
       "candidate_proof": "disposable project and local clean-commit fixture with telemetry disabled; no global or consumer-repository write"
     },
@@ -90,7 +90,7 @@
     "recreate": false,
     "first_public_release": "v0.2.0"
   },
-  "release_notes": "CHANGELOG.md#031-release-candidate",
+  "release_notes": "CHANGELOG.md#040-release-candidate",
   "build_evidence": {
     "required_checks": [
       "python3 scripts/validate_repo.py",
@@ -108,7 +108,7 @@
     "GitHub Support confirms purge of refs/pull/2/head, refs/pull/3/head, unreachable old objects, cached diffs, and cached views",
     "a private-state re-audit reports zero blocked findings across every ordinary and managed ref, object, issue, release, cached diff, and cached view",
     "the verified onlinesourdough/Global-Skills repository is the current canonical endpoint while the historical onlinesourdough/Skills sanitization protections remain intact",
-    "a later exact Ship authority changes candidate metadata to released state with the actual date and creates immutable v0.3.1 from the reviewed commit",
+    "a later exact Ship authority changes candidate metadata to released state with the actual date and creates immutable v0.4.0 from the reviewed commit",
     "anonymous API, HTTP, Git, Atlas, Codex, and Skills CLI readback passes before any public availability claim"
   ]
 }

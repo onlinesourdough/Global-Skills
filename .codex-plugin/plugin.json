@@ -1,7 +1,7 @@
 {
   "name": "onlinesourdough-skills",
-  "version": "0.3.1",
-  "description": "Three portable, reviewed skills for visual explanation, offer shaping, and local guardrails.",
+  "version": "0.4.0",
+  "description": "Three portable skills for visual explanation, offer shaping, and local guardrails.",
   "author": {
     "name": "onlinesourdough",
     "url": "https://github.com/onlinesourdough"
@@ -15,10 +15,16 @@
     "composerIcon": "./assets/branding/skills-icon.png",
     "logo": "./assets/branding/skills-icon.png",
     "shortDescription": "Reviewed global skills from one portable source.",
-    "longDescription": "Explain topics, shape trust-based offers, and set up bounded local shell guardrails.",
+    "longDescription": "Explain topics, shape offers, and configure bounded local shell guardrails.",
     "developerName": "onlinesourdough",
     "category": "Productivity",
-    "capabilities": ["Visual explanation", "Offer shaping", "Local safety guardrails"],
-    "defaultPrompt": ["Use the relevant global skill for this task."]
+    "capabilities": [
+      "Visual explanation",
+      "Offer shaping",
+      "Local safety guardrails"
+    ],
+    "defaultPrompt": [
+      "Use the relevant global skill for this task."
+    ]
   }
 }

@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import re
@@ -15,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_SKILLS = {"clarify", "setup-guardrails", "shape-offer"}
 RETIRED_SKILL = "route-models"
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-RELEASE_VERSION = "0.3.1"
+RELEASE_VERSION = "0.4.0"
 RELEASE_TAG = f"v{RELEASE_VERSION}"
 PREVIOUS_TAG = "v0.1.0"
 BASELINE_REF = "refs/heads/codex/issue-33-cross-harness-portability"
@@ -57,21 +58,62 @@ def load_json(path: Path, errors: list[str]) -> dict:
     return value
 
 
-def parse_frontmatter(path: Path, errors: list[str]) -> tuple[dict[str, str], str]:
-    text = path.read_text(encoding="utf-8")
+def parse_string(raw: str, *, quoted: bool = False) -> str:
+    """Parse the documented one-line string subset; reject YAML indicators."""
+    raw = raw.strip()
+    if raw.startswith('"'):
+        value = json.loads(raw)
+        if not isinstance(value, str):
+            raise ValueError("not a string")
+        return value
+    if raw.startswith("'"):
+        if not re.fullmatch(r"'(?:[^']|'')*'", raw):
+            raise ValueError("invalid quoted string")
+        return raw[1:-1].replace("''", "'")
+    if quoted or not raw or not raw[0].isalpha() or raw[0] in "[{]}>,|*&!%@`#" or re.match(r"[-?:](?:\s|$)", raw):
+        raise ValueError("use a valid quoted string")
+    if raw.lower() in {"null", "~", "true", "false", "yes", "no", "on", "off"} or re.fullmatch(r"[-+]?\d+(?:\.\d+)?", raw) or re.search(r":(?:\s|$)|\s#", raw):
+        raise ValueError("quote YAML special values")
+    return raw
+
+
+def parse_frontmatter(path: Path, errors: list[str], *, source: str | None = None) -> tuple[dict, str]:
+    text = source if source is not None else path.read_text(encoding="utf-8")
     if not text.startswith("---\n") or "\n---\n" not in text[4:]:
         fail(errors, f"{path.relative_to(ROOT)}: invalid frontmatter")
         return {}, text
     marker = text.find("\n---\n", 4)
-    values: dict[str, str] = {}
+    values: dict = {}
+    metadata = None
     for line in text[4:marker].splitlines():
         if not line.strip():
             continue
+        if line.startswith("  ") and metadata is not None:
+            match = re.fullmatch(r"  ([a-z][a-z0-9_-]*):\s+(.+)", line)
+            if not match or match[1] in metadata:
+                fail(errors, f"{path.relative_to(ROOT)}: invalid or duplicate metadata field")
+                continue
+            try:
+                metadata[match[1]] = parse_string(match[2], quoted=True)
+            except ValueError:
+                fail(errors, f"{path.relative_to(ROOT)}: metadata values must be valid quoted strings")
+            continue
+        metadata = None
         if ":" not in line or line[:1].isspace():
             fail(errors, f"{path.relative_to(ROOT)}: invalid frontmatter line")
             continue
         key, value = line.split(":", 1)
-        values[key.strip()] = value.strip().strip('"').strip("'")
+        if key in values:
+            fail(errors, f"{path.relative_to(ROOT)}: duplicate frontmatter field {key}")
+            continue
+        if key == "metadata" and not value.strip():
+            metadata = {}
+            values[key] = metadata
+            continue
+        try:
+            values[key.strip()] = parse_string(value)
+        except ValueError:
+            fail(errors, f"{path.relative_to(ROOT)}: invalid frontmatter string {key}")
     return values, text[marker + 5 :]
 
 
@@ -80,10 +122,14 @@ def validate_skill(path: Path, errors: list[str]) -> None:
     values, body = parse_frontmatter(path, errors)
     if not SLUG.fullmatch(slug):
         fail(errors, f"{path.relative_to(ROOT)}: invalid skill slug")
-    if set(values) != {"name", "description"} or values.get("name") != slug:
+    if set(values) != {"name", "description", "metadata"} or values.get("name") != slug:
         fail(errors, f"{path.relative_to(ROOT)}: frontmatter name/keys mismatch")
     if not values.get("description") or not body.strip():
         fail(errors, f"{path.relative_to(ROOT)}: description and body are required")
+    metadata = values.get("metadata")
+    version = metadata.get("version", "") if isinstance(metadata, dict) else ""
+    if not re.fullmatch(r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)", version):
+        fail(errors, f"{path.relative_to(ROOT)}: metadata.version must be MAJOR.MINOR.PATCH")
     if "[TODO" in path.read_text(encoding="utf-8"):
         fail(errors, f"{path.relative_to(ROOT)}: TODO placeholder remains")
     for child in path.parent.iterdir():
@@ -184,8 +230,8 @@ def validate_json_files(errors: list[str]) -> None:
     history = release.get("history_visibility", {})
     if history.get("status") != "PRIVATE_SUPPORT_PURGE_PENDING" or history.get("visibility_change_legal") is not False:
         fail(errors, "release.json: unresolved history gate must remain explicit")
-    if release.get("release_notes") != "CHANGELOG.md#031-release-candidate":
-        fail(errors, "release.json: release notes must target 0.3.1")
+    if release.get("release_notes") != "CHANGELOG.md#040-release-candidate":
+        fail(errors, "release.json: release notes must target 0.4.0")
 
     planned = release.get("marketplace", {})
     if planned.get("source") != {"source": "url", "url": CANONICAL_REPOSITORY, "ref": RELEASE_TAG} or planned.get("tag_exists_at_build") is not False:
@@ -213,6 +259,53 @@ def validate_json_files(errors: list[str]) -> None:
 def git_output(*arguments: str) -> str | None:
     result = subprocess.run(["git", *arguments], cwd=ROOT, text=True, capture_output=True, check=False)
     return result.stdout.strip() if result.returncode == 0 else None
+
+
+def validate_versions_against(base: str, errors: list[str]) -> None:
+    """Require an increased skill version when any of its shipped files changes."""
+    revision = git_output("rev-parse", "--verify", "--end-of-options", f"{base}^{{commit}}")
+    if not revision:
+        fail(errors, "skill versions: baseline must resolve to a local commit")
+        return
+    for skill in sorted((ROOT / "skills").glob("*/SKILL.md")):
+        relative = skill.parent.relative_to(ROOT).as_posix()
+        before = git_output("show", f"{revision}:{relative}/SKILL.md")
+        values, _ = parse_frontmatter(skill, errors)
+        metadata = values.get("metadata")
+        version = metadata.get("version", "") if isinstance(metadata, dict) else ""
+        prior_errors = len(errors)
+        old_fields, _ = parse_frontmatter(skill, errors, source=before) if before is not None else ({}, "")
+        if len(errors) != prior_errors:
+            fail(errors, f"{relative}: cannot assess malformed baseline frontmatter")
+            continue
+        old_metadata = old_fields.get("metadata", {})
+        if not isinstance(old_metadata, dict):
+            fail(errors, f"{relative}: malformed baseline metadata")
+            continue
+        old = old_metadata.get("version")
+        if old is None:
+            if version != "1.0.0":
+                fail(errors, f"{relative}: first individually tracked version must be 1.0.0")
+            continue
+        if not re.fullmatch(r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)", old):
+            fail(errors, f"{relative}: malformed baseline metadata.version")
+            continue
+        try:
+            current_version = tuple(int(n) for n in version.split("."))
+            old_version = tuple(int(n) for n in old.split("."))
+        except ValueError:
+            fail(errors, f"{relative}: version components cannot be compared on this runtime")
+            continue
+        if current_version < old_version:
+            fail(errors, f"{relative}: skill version cannot decrease")
+        old_files = set((git_output("ls-tree", "-r", "--name-only", revision, "--", relative) or "").splitlines())
+        current_files = {p.relative_to(ROOT).as_posix() for p in skill.parent.rglob("*") if p.is_file()}
+        changed = old_files != current_files
+        for name in old_files & current_files:
+            blob = subprocess.run(["git", "show", f"{revision}:{name}"], cwd=ROOT, capture_output=True)
+            changed = changed or blob.returncode != 0 or blob.stdout != (ROOT / name).read_bytes()
+        if changed and current_version <= old_version:
+            fail(errors, f"{relative}: changed payload requires an increased metadata.version")
 
 
 def validate_git_candidate(errors: list[str]) -> None:
@@ -294,10 +387,15 @@ def validate_docs_and_privacy(errors: list[str]) -> None:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--base", help="local reviewed commit for per-skill version progression")
+    args = parser.parse_args()
     errors: list[str] = []
     validate_structure(errors)
     validate_json_files(errors)
     validate_git_candidate(errors)
+    if args.base:
+        validate_versions_against(args.base, errors)
     validate_docs_and_privacy(errors)
     if errors:
         for error in errors:

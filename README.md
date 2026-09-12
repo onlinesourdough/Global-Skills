@@ -4,16 +4,16 @@
 
 # Online Sourdough Skills
 
-Three small, reviewed methods for agent workflows, distributed from one
+Three small methods for agent workflows, distributed from one
 harness-neutral source. The canonical payload is always
 `skills/<slug>/SKILL.md`; the root Codex plugin, Pi package, and other
 installers discover that same payload instead of maintaining copies.
 
-The current source candidate is `0.3.1`. Any existing `0.2.0` installation is
-legacy content; this candidate uses the distinct `v0.3.1` identity. After lead
+The current source candidate is `0.4.0`. Any existing `0.2.0` installation is
+legacy content; this candidate uses the distinct `v0.4.0` identity. After lead
 Review, its reviewed source may be synchronized to the verified canonical
 `main`; that source-only synchronization does not create a public release. Its
-public install commands are valid only after the immutable `v0.3.1` tag is
+public install commands are valid only after the immutable `v0.4.0` tag is
 visible on GitHub. Build and Review evidence uses local commit/ref fixtures and
 does not claim that the tag already exists.
 
@@ -30,6 +30,11 @@ operations. The management workflow is owned by the AIOS owner route or a
 native standalone workflow; it is not an active Global Skills payload. Worker
 orchestration is owned by the AIOS plugin route `aios-orchestrate-workers`.
 Neither capability is required to discover or use these portable skills.
+
+Each skill has its own `metadata.version` in SemVer. This starts the individually
+versioned baseline at `1.0.0`; it is separate from package `0.4.0`. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for bump rules and
+[the alignment evidence](docs/astra-alignment.md) for the current change.
 
 ## Source and scope
 
@@ -56,7 +61,7 @@ With a Codex CLI that supports `codex plugin`, add the repository marketplace
 at the immutable release tag, inspect it, and install the plugin:
 
 ```sh
-codex plugin marketplace add onlinesourdough/Global-Skills --ref v0.3.1
+codex plugin marketplace add onlinesourdough/Global-Skills --ref v0.4.0
 codex plugin list --available --json
 codex plugin add onlinesourdough-skills@onlinesourdough-skills
 ```
@@ -71,14 +76,14 @@ The optional project-local adapter is pinned to `skills@1.5.23`. Discover the
 source without installing:
 
 ```sh
-npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.3.1 --list
+npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.4.0 --list
 ```
 
 Install all three skills for Claude Code and Cursor in the current project, then
 inspect discovery and the generated `skills-lock.json`:
 
 ```sh
-npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.3.1 --skill clarify setup-guardrails shape-offer --agent claude-code cursor -y
+npx skills@1.5.23 add onlinesourdough/Global-Skills#v0.4.0 --skill clarify setup-guardrails shape-offer --agent claude-code cursor -y
 npx skills@1.5.23 list --agent claude-code cursor
 ```
 
@@ -91,12 +96,12 @@ model-backed behavior in Claude Code or Cursor Agent.
 
 The root `package.json` exposes the same canonical `./skills` directory to Pi.
 Pi's `-l` flag keeps package settings project-local in `.pi/settings.json`.
-Because `v0.3.1` is still an unreleased candidate, do not run the pinned
+Because `v0.4.0` is still an unreleased candidate, do not run the pinned
 install until that immutable tag exists and has passed Ship verification. In a
 disposable project after publication:
 
 ```sh
-pi install git:github.com/onlinesourdough/Global-Skills@v0.3.1 -l
+pi install git:github.com/onlinesourdough/Global-Skills@v0.4.0 -l
 pi list
 ```
 
@@ -111,7 +116,7 @@ pi install git:github.com/onlinesourdough/Global-Skills@<reviewed-ref> -l
 To remove the current candidate from the same project, use its exact source:
 
 ```sh
-pi remove git:github.com/onlinesourdough/Global-Skills@v0.3.1 -l
+pi remove git:github.com/onlinesourdough/Global-Skills@v0.4.0 -l
 ```
 
 These commands are documented usage guidance; this source cleanup does not
@@ -126,7 +131,7 @@ discovery plus representative behavior. Do not use a mutable branch as a
 release ref.
 
 The verified `onlinesourdough/Global-Skills` repository is the current
-canonical endpoint and is observed public. The `0.3.1` source candidate remains
+canonical endpoint and is observed public. The `0.4.0` source candidate remains
 unreleased; source-only synchronization to canonical `main` does not create
 public release availability, which remains held pending the recorded GitHub
 Support purge and private-state re-audit. The owner selected no
@@ -168,7 +173,7 @@ An optional authenticated, self-hosted Atlas may propose exactly one validated
 skill edit on a new branch and open a pull request. It never writes the default
 branch. The repository is currently observed public, but this Build candidate
 does not claim that the live Atlas integration works or that an unreleased
-`v0.3.1` release is publicly available; both require post-Ship verification.
+`v0.4.0` release is publicly available; both require post-Ship verification.
 
 ## Validate a checkout
 

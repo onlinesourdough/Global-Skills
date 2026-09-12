@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0 release candidate
+
+- Add independent `metadata.version` to every skill and validate its format.
+- Simplify Clarify and Shape Offer around the requested result and relevant evidence.
+- Carry existing task authority through verification and review; preserve native
+  hook trust, publication and historical Support purge requirements.
+- Update the three-skill distribution inventory. This is an unreleased source
+  candidate; reviewed local adoption does not imply public release availability.
+
 ## 0.3.1 release candidate
 
 This local candidate prepares the verified `onlinesourdough/Global-Skills`

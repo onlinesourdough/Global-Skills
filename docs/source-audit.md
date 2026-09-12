@@ -1,6 +1,6 @@
 # Public release source and safety audit
 
-This record describes the current `0.3.1` source candidate. It is evidence for
+This record describes the current `0.4.0` source candidate. It is evidence for
 source review, not proof that a public release, native installation, or runtime
 integration is available.
 
@@ -16,7 +16,7 @@ AIOS plugin route `aios-orchestrate-workers`.
 The candidate is an unreleased source candidate. After lead Review, the
 reviewed source may be synchronized to the verified canonical `main`; that
 source-only synchronization does not create public release availability. The
-`v0.3.1` tag, GitHub release, public install, native adoption, and runtime
+`v0.4.0` tag, GitHub release, public install, native adoption, and runtime
 acceptance remain separate Ship actions.
 
 The verified canonical endpoint is
@@ -85,7 +85,7 @@ sanitization remain unresolved in this record. The repository is observed
 public, but that observation does not waive the gate. Publication remains
 **BLOCKED** until the Support purge and re-audit requirements below pass.
 
-Before a public `v0.3.1` release or public availability claim, a later exact
+Before a public `v0.4.0` release or public availability claim, a later exact
 Ship authority must require all of the following:
 
 1. GitHub Support confirms purge of the recorded managed refs, cached views,
@@ -93,7 +93,7 @@ Ship authority must require all of the following:
 2. A new private-state re-audit finds zero blocked content across ordinary and
    managed refs, objects, issues, releases, and caches.
 3. The reviewed source is synchronized to the unchanged canonical endpoint,
-   then an immutable `v0.3.1` tag and release are created and read back.
+   then an immutable `v0.4.0` tag and release are created and read back.
 4. Anonymous Git/HTTP/API, Codex, Skills CLI, Atlas, and any selected native
    runtime checks pass before installation is presented as available.
 

@@ -1,8 +1,8 @@
 {
   "name": "onlinesourdough-skills",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "private": true,
-  "description": "Three portable, reviewed skills for visual explanation, offer shaping, and local guardrails.",
+  "description": "Three portable skills for visual explanation, offer shaping, and local guardrails.",
   "license": "MIT",
   "keywords": [
     "pi-package"
