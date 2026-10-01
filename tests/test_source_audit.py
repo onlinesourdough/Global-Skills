@@ -52,7 +52,7 @@ class SourceSafetyTests(unittest.TestCase):
         self.assertNotIn("Aarhus", fixture)
         self.assertEqual(
             {path.relative_to(ROOT / "assets").as_posix() for path in (ROOT / "assets").rglob("*") if path.is_file()},
-            {"branding/skills-banner.png", "branding/skills-icon.png"},
+            {"branding/skills-icon.png"},
         )
 
     def test_default_runner_is_local_and_forward_check_is_opt_in(self) -> None:

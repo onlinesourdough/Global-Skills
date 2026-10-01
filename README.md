@@ -1,21 +1,12 @@
-![Online Sourdough Skills banner](assets/branding/skills-banner.png)
-
-<a href="assets/branding/skills-icon.png"><img src="assets/branding/skills-icon.png" alt="Online Sourdough Skills icon" width="48" height="48"></a>
-
 # Online Sourdough Skills
 
-Three small methods for agent workflows, distributed from one
-harness-neutral source. The canonical payload is always
-`skills/<slug>/SKILL.md`; the root Codex plugin, Pi package, and other
-installers discover that same payload instead of maintaining copies.
+Three skills for explaining a topic, shaping a business offer and setting up
+local shell guardrails. Use them in Codex, Pi or another app that supports Agent
+Skills. Each installer reads the same files in `skills/<slug>/SKILL.md`.
 
-The current source candidate is `0.4.0`. Any existing `0.2.0` installation is
-legacy content; this candidate uses the distinct `v0.4.0` identity. After lead
-Review, its reviewed source may be synchronized to the verified canonical
-`main`; that source-only synchronization does not create a public release. Its
-public install commands are valid only after the immutable `v0.4.0` tag is
-visible on GitHub. Build and Review evidence uses local commit/ref fixtures and
-does not claim that the tag already exists.
+**Status:** `0.4.0` is an unreleased candidate. The pinned install commands below
+require the published `v0.4.0` tag. Earlier `0.2.0` installs contain legacy skills.
+See [release status and prerequisites](release.json) before installing.
 
 ## Included skills
 

@@ -57,7 +57,7 @@ class PortabilityContractTests(unittest.TestCase):
         for tag in ("v0.1.0", RELEASE_TAG):
             result = subprocess.run(["git", "rev-parse", "--verify", f"refs/tags/{tag}^{{commit}}"], cwd=ROOT, capture_output=True, text=True)
             self.assertNotEqual(result.returncode, 0, tag)
-        self.assertIn("does not claim that the tag already exists", self.readme)
+        self.assertIn("`0.4.0` is an unreleased candidate", self.readme)
 
     def test_one_canonical_payload_root_and_owner_boundaries(self) -> None:
         payloads = [path for path in ROOT.rglob("SKILL.md") if ".git" not in path.parts]
